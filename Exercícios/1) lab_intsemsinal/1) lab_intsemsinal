@@ -1,0 +1,76 @@
+1)
+a.
+00000000 00000000 00100111 00010000 
+                     27       10
+1*2^13 + 1*2^10 + 1*2^9 + 1*2^8  +  1*2^4
+
+b.
+00000000 00000000 00000000 00000000 00000000 00000000 00100111 00010000 
+           27        10
+1*2^13 + 1*2^10 + 1*2^9 + 1*2^8  +  1*2^4
+
+c.
+00100111 00010000 
+  27        10
+1*2^13 + 1*2^10 + 1*2^9 + 1*2^8  +  1*2^4
+
+d.
+	char i = 'a'; output: 61
+	char i = 97;  output: 61
+
+e.
+	char p[] = "A \n$";
+
+	0x7fffe22b84b0 - 41 A
+	0x7fffe22b84b1 - 20 ' '
+	0x7fffe22b84b2 - 0a \n
+	0x7fffe22b84b3 - 24 $
+	0x7fffe22b84b4 - 00
+
+2)
+a.
+'a' é a cada leitura de caractere da string atríbuido a seu último valor*10 + a distância do caractere lido do '0' na tabela ASCII. O processo acaba funcionando como uma concatenação do próximo algarismo do número lido na string, matematicamente adicionado.
+
+b.
+int string2num (char *s, int base)
+{
+	if (base < 2 || base > 10)
+	{
+		printf("Base fornecida deve ser entre 2 e 10. Tente "); 		printf("novamente.\n");
+		exit(1);
+	}
+
+	int a = 0;
+	for (; *s; s++)
+		a = a*base + (*s - '0');
+
+	return a;	// retorna sempre em base decimal
+}
+
+c.
+int string2num (char *s, int base)
+{
+	if (base < 2)
+	{
+		printf("Base fornecida deve ser entre 2 e 10. Tente "); 		printf("novamente.\n");
+		exit(1);
+	}
+
+	int a = 0;
+	for (; *s; s++)
+	{	
+		if (isdigit(*s))
+			a = a*base + (*s - '0');
+		else
+			a = a*base + (*s - 'a' + 10);
+ 	}
+
+	return a;	// retorna sempre em base decimal
+}
+
+
+
+
+
+
+
