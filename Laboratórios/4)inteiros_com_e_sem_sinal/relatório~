@@ -1,0 +1,132 @@
+dump1.c:
+/* CONTAS
+
+  	char c = 150; 
+150/2 = 75/2 = 37/2 = 18/2 = 9/2 = 4/2 = 2/2 = 1
+0	1	1	0	1	0	0	1
+	c = 10010110; %02X = 0x(1x2^3+1x2^0)(1x2^3+1x2^0) = 0x96
+	*CORRETO*
+
+	short s = -3;
+0000 0000 0000 0011 -> 1111 1111 1111 1100 + 1 = 1111 1111 1111 1101 
+	%02X = 0xFFFD; little_endian: FD, FF
+	*CORRETO* 
+ 
+  	int i = -151;
+0000 0000 0000 0000 0000 0000 1001 0111 ->
+1111 1111 1111 1111 1111 1111 0110 1000 + 1 = 
+1111 1111 1111 1111 1111 1111 0110 1001 = 
+  F    F    F    F    F    F    6    9
+	little endian:  69, FF, FF, FF
+	*CORRETO*
+*/
+
+dump2.c:
+* CONTAS
+
+  	short l = -32765;
+32765/2 = 16382/2 = 8191/2 = 4095/2 = 2047/2 = 1023/2 = 511/2 = 255/2=
+127/2 = 63/2 = 31/2 = 15/2 = 7/2 = 3/2 = 1
+	l -> 0111 1111 1111 1101 -> 1000 0000 0000 0010 + 1 =
+	1000 0000 0000 0011  -> 0x8003
+	little endian: 03, 80
+	
+	unsigned short k = 32771;
+32771/2  = 16385/2  = 8192/2 = 4096/2 = 2048/2 = 1024/2 = 512/2 =  256/2 = 128/2 = 64/2 = 32/2 16/2 = 8/2 =4/2 = 2/2 = 1
+	k = 1000 0000 0000 0011
+	%02X = 0x8003; little_endian: 03, 80
+	
+	
+	Em complemento a 2, plicada a formúla (2n - 1) - (-x) + 1 ao valor de l (pois o mesmo é negativo) obtemos a mesma 		representação do valor de k (que é positivo)
+
+*/
+
+xbyte.c:
+	Palavra recebe deslocamento (lógico, pois é unsigned) de 8 vezes rótulo do byte desejado (se 0 desnecessário, porém optada limpeza no 		código no lugar de performance) e assim o valor deste byte agora presente no byte menos significativo da palavra.
+	Com 'and' lógico da palavra com 0x000000FF, o valor do byte escolhido é mantido, enquanto todos os outros são zerados. Agora VALOR da 		palavra = byte
+	Isso é, se for um valor não-negativo. Caso seja negativo (bit mais significativo do byte em questão = 1 (só a palavra é unsigned, o 		byte é signed) é realizado um 'or' lógico com 0xFFFFFF00, que altera todos os bits 0ś da palavra fora do byte desejado para 1 		enquanto mantém os valores do byte menos significativo.
+	retorna palavra
+
+
+4-1.c:
+/* EXPLICAÇÃO
+	(HEX to BIN, BIN to DEC)
+	x = 0xffffffff -> 1111 1111 1111 1111 1111 1111 1111 1111 ->
+		       -> 0000 0000 0000 0000 0000 0000 0000 0000
+		       					       +1 	       		  0000 0000 0000 0000 0000 0000 0000 0001 -> -1
+		       SIGNED int
+	y = 2
+		       SIGNED int
+		       
+		       -1 < 2, x É menor que y */
+		       
+4-2.c:
+/* EXPLICAÇÃO
+	(HEX to BIN, BIN to DEC)
+	x = 0xffffffff -> 1111 1111 1111 1111 1111 1111 1111 1111 ->
+			  31
+		       -> ∑1x2^n = 4294967295
+			 n=0       
+		       UNSIGNED int
+	y = 2
+		       UNSIGNED int
+		       
+		       4294967295 > 2, x NÃO É menor que y */
+		       
+4-3.c:
+/* EXPLICAÇÃO
+	(HEX to BIN, BIN to DEC)
+	x = 0xffffffff -> 1111 1111 1111 1111 1111 1111 1111 1111 ->
+		       -> 0000 0000 0000 0000 0000 0000 0000 0000
+		       					       +1
+			  0000 0000 0000 0000 0000 0000 0000 0001-> -1
+		       SIGNED int
+	y = 2 -> 					     0010 ->
+	      -> 					     1101
+							       +1
+							     1110->-14
+		       UNSIGNED int
+		       
+		       -1 > -14, x NÃO É menor que y */
+		       
+sc ui.c:
+/* CONVERSÃO NA MÃO
+	signed char sc = -1;
+	unsigned int ui = sc; (32 bits)
+	
+	-1 -> 1 -> 0000 0001 -> 1111 1110
+				       +1
+				1111 1111
+				SIGNED CHAR (8 bits)
+	
+	0000 0000 0000 0000 0000 0000 0000 0000 UNSIGNED INT
+				     +1111 1111 UNSIGNED CHAR
+	----------------------------------------------------- 
+       |0000 0000 0000 0000 0000 0000 1111 1111 UNSIGNED INT|
+       -----------------------------------------------------
+       		    (repesentação interna)
+       		    
+       	!NA_MÃO	    
+	output:
+	dump de ui: 
+	0x7fff6e703b38 - ff
+	0x7fff6e703b39 - ff
+	0x7fff6e703b3a - ff
+	0x7fff6e703b3b - ff
+	
+	o valor do 1 byte de uma variável é atribuído a todos os bytes
+	da outra(?)
+	
+	
+	(sc = -18)
+	dump de sc: 
+	0x7fff7f29dfdf - ee
+	dump de ui: 
+	0x7fff7f29dfd8 - ee
+	0x7fff7f29dfd9 - ff
+	0x7fff7f29dfda - ff
+	0x7fff7f29dfdb - ff
+
+	**** O BYTE MENOS SIGNIFICATIVO É ATRÍBUIDO CONFORME A VARIÁVEL ORIGINAL E OS OUTROS SÃO TODOS SETADOS COM (EM SEUS BITS) 1 ****
+	(atribuição seguida de 'or' lógico com [neste caso] 0xFFFFFF00?)
+*/        
