@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include "dump2.h"
+
+void dump (void *p, int n) 
+{
+	unsigned char *p1 = p;
+	while (n--)
+	{
+		printf("%p - %02x\n", p1, *p1);
+		p1++;
+	}
+}
+
+int main(void)
+{
+	X var = {0xa1a2a3a4, 0xb1b2, 0xc1c2c3c4};
+	dump(&var, sizeof(var));
+	printf("A struct tem %ld bytes.\n", sizeof(var));
+	
+	return 0;
+}
+
+// O "buraco" é o padding, necessário para que o int seguinte seja alocado numa memória com endereçamento múltiplo de 4.

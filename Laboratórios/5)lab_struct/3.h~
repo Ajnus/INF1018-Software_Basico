@@ -1,0 +1,52 @@
+typedef struct X1
+{
+	char c1;
+	int i;
+	char c2;
+}X1;
+
+typedef struct X2
+{
+	long l;
+	char c;
+}X2;
+
+typedef struct X3
+{
+	int i;
+	char c1;
+	char c2;
+}X3;
+
+typedef struct X4
+{
+	struct X2 x;
+	char c;
+}X4;
+
+typedef struct X5
+{
+	char c1;
+	char c2;
+	char c3;
+}X5;
+
+typedef struct X6
+{
+	short s1;
+	short s2;
+	char c[3];
+	int i;
+}X6;
+
+typedef union U1
+{
+	int i;
+	char c[5];
+}U1;
+
+typedef union U2
+{
+	short s;
+	char c[5];
+}U2;
