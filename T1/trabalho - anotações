@@ -20,23 +20,19 @@ int utf8_32 (FILE *arq_entrada, FILE *arq_saida):
 * entrada:     sem BOM
 * saída:       com BOM
 * sucesso:     return 0; 
-  falha:       erro de E/S: emitir, na saída de erro (stderr), uma mensagem indicando qual o tipo de erro ocorrido (leitura ou gravação)
-  	       + return -1;
+  falha:       erro de E/S: emitir, na saída de erro (stderr), uma mensagem indicando qual o tipo de 			  erro ocorrido (leitura ou gravação) + return -1;
 * assumir como entrada TEXTO CORRETAMENTE CODIFICADO
 
 int utf32_8(FILE *arq_entrada, FILE *arq_saida):
 * BOM  informa ENDIAN
 * entrada:     com BOM
 * saída:       sem BOM
-* A função deve inspecionar os primeiros quatro bytes do conteúdo do arquivo de entrada (UTF-32) para verificar se eles contêm 
-               um BOM válido!
+* A função deve inspecionar os primeiros quatro bytes do conteúdo do arquivo de entrada (UTF-32) para verificar se eles contêm um BOM válido!
 * sucesso:     return 0;
-* falha:       1) erro de E/S: a função deve emitir, na saída de erro (stderr), uma mensagem indicando o tipo de erro ocorrido
-		      (leitura ou gravação) + return -1;
-	       2) BOM inválido: a função deve emitir, na saída de erro (stderr) uma mensagem de erro. + return -1;
-		      * Nos dois casos, a função deve retornar imediatamente após emitir a mensagem de erro
-* os arquivos de entrada sempre conterão um texto CORRETAMENTE CODIFICADO. Apenas o caso de BOM	inválido (ou ausente)
-               no início do arquivo precisa ser tratado. 
+* falha:	   1) erro de E/S: a função deve emitir, na saída de erro (stderr), uma mensagem 						  indicando o tipo de erro ocorrido (leitura ou gravação) + return -1;
+			   2) BOM inválido: a função deve emitir, na saída de erro (stderr) uma mensagem de erro.	+ return -1;
+			   * Nos dois casos, a função deve retornar imediatamente após emitir a mensagem de erro
+* os arquivos de entrada sempre conterão um texto CORRETAMENTE CODIFICADO. Apenas o caso de BOM	   	   inválido (ou ausente) no início do arquivo precisa ser tratado. 
 
 
 Divide and Conquer:
@@ -47,13 +43,13 @@ utf8_32:
 	4) gere arquivo de saída
 	*  verificar o conteúdo do arquivo gravado: hexdump -C <nome-do-arquivo>
 
-************************ LITTLE ENDIAN ************************ 
+***************** LITTLE ENDIAN ***************** 
 		UTF-8					UTF-32
-ESPAÇO         = 20		|		  20		
-𝄞		= F0 9D 84 9E	 |	   1E D1 01 00	(0x1D11E)
-水	      = E6 B0 B4       |	 34 6C 00 00   (0x6C34)
-.	       = 2E	        |		  2E
-************************ LITTLE ENDIAN ************************
+ESPAÇO  = 20			|		  20		
+𝄞		= F0 9D 84 9E	|	   1E D1 01 00	(0x1D11E)
+水		= E6 B0 B4		|	   34 6C 00 00	(0x6C34)
+.		= 2E			|		  2E
+***************** LITTLE ENDIAN ***************** 
 
 tamanho total:
 <strike>UTF-8 tem 6 bytes a mais de informação que o tamanho total. Por quê?
@@ -69,26 +65,31 @@ fread/fgetc
 Escrever:
 fwrite/fputc
 
-		    UTF-8				UTF-32
-𝄞 =               F0 9D 84 9E	 	|	   1E D1 01 00	(0x1D11E)
+			UTF-8				UTF-32
+𝄞 =       F0 9D 84 9E	 |	   1E D1 01 00	(0x1D11E)
 
 int utf32_8(FILE *arq_entrada, FILE *arq_saida):
 * VERIFICAR BOM (4 bytes)
-	1) erro de E/S: a função deve emitir, na saída de erro (stderr), uma mensagem
-		indicando o tipo de erro ocorrido (leitura ou gravação) + return -1;
-	2) BOM inválido: a função deve emitir, na saída de erro (stderr) uma mensagem
-	de erro. + return -1;
+	1) erro de E/S: a função deve emitir, na saída de erro (stderr), uma mensagem 	   indicando o tipo de erro ocorrido (leitura ou gravação) + return -1;
+	2) BOM inválido: a função deve emitir, na saída de erro (stderr) uma mensagem 	   de erro.	+ return -1;
 	3) else: segue
 
 
-          0x0001D11E    ->      0xF09D849E ("a ordem de armazenamento não faz sentido para arquivos UTF-8")
+          0x0001D11E    ->      0xF09D849E ("a ordem de armazenamento não faz sentido 					                   para arquivos UTF-8")
  0    0    0    1    D    1    1    E
 0000 0000 0000 0001 1101 0001 0001 1110 
 0001D11E-> tabela -> U+10000 a U+10FFFF | (2^16 a 2^21-1)| 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx (usa 4 bytes)
 0001D11E -> 11110|3BITS 10|6BITS 10|6BITS 10|6BITS -> 
-			calcular e preencher primeiro 0's a esquerda: n máximo de bits da seção da tabela - número de
-			bits significativos do número-> (21 - 17 = 4)
+			calcular e preencher primeiro 0's a esquerda: n máximo de bits da seção da tabela - número de bits significativos do número-> (21 - 17 = 4)
             11110|000   10011101 10000100 10011110 -> 
             1111 0000 1001 1101 1000 0100 1001 1110
               F    0    9   D    8    4    9    E  -> GG
-	      
+
+"trabalho"
+little ou big endian
+
+rotate left
+
+
+0110 0011 | 0111 0111 | 1100 0010 | 1010 1001 | 0010 1110 | 0000 0000
+
