@@ -1,0 +1,12 @@
+/* Júlio Necyk Cavalcanti Maia		1710430 3WB */
+/* Jam Ajna Soares			1013109 3WB */
+
+
+/* NOPE NOPE
+A primeira função ehLittleEndian verifica se o arquivo está em Big Endian, retornando 0, ou Little Endian, retornando 1, dessa forma checa-se o BOM, para UNICODE 32bits.
+
+A suganda função trocaBigLit inverte os bytes de um número dois a dois, transformando, dessa forma, de big endian para little endian.
+
+Já na terceira função contaBits, recebe um valor em utf8 e conta quantos 1's tem no char usado como parâmetro. Retorna 0 se for 0xxxxxxx, retorna 2 se for 110xxxxx 10xxxxxx, 3 se for 1110xxxx 10xxxxxx 10xxxxxx, e por fim, retorna 4 se for 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx.
+NOPE NOPE */
+
