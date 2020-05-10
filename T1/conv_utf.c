@@ -17,11 +17,10 @@
 }*/
 
 /**********************************************************************
-* Determina através BOM se a ordenação é Little Endian ou Big Endian *
-* return 1 -> Little						    *
-* return 0 -> Big						   * 
-******************************************************************/
-int ordByBOM()
+* return 1 -> Little						     *
+* return 0 -> Big						    * 
+*******************************************************************/
+int isLittleEndian()
 {
 	unsigned int b = 1;
 	
@@ -53,11 +52,18 @@ int utf8_32(FILE *arq_entrada, FILE *arq_saida){
 	unsigned int temp;
 	unsigned int carac32;
 	int i;
+	int bom;
+	int insBom;	
 	if (arq_entrada==NULL || arq_saida==NULL){
 		printf("Erro de leitura do arquivo\n");
 		return -1;
 	}
-
+	bom=isLittleEndian();
+	if (bom==1)
+		insBom=0xFFFE0000;
+	else
+		insBom=0x0000FEFF;
+	i=contaBits(c);
 
 	
 }
