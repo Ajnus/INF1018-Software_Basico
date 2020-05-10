@@ -5,6 +5,17 @@
 //#include <stdlib.h>
 #include "conv_utf.h"
 
+/*void dump (void *p, int n)
+{
+	unsigned char *p1 = p;
+	while (n--)
+	{
+		printf("%p - %02x\n", p1, *p1);
+		p1++;
+	}
+
+}*/
+
 /**********************************************************************
 * Determina através BOM se a ordenação é Little Endian ou Big Endian *
 * return 1 -> Little						    *
@@ -12,9 +23,13 @@
 ******************************************************************/
 int ordByBOM()
 {
-	int b = 1;
+	unsigned int b = 1;
 	
-	return *(char *)&b;	
+	/*(dump(&b, sizeof(b));
+	b = b<<24;
+	dump(&b, sizeof(b));*/
+	
+	return b<<24;	
 }
 
 /*
