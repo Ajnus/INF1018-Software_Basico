@@ -5,6 +5,17 @@
 //#include <stdlib.h>
 #include "conv_utf.h"
 
+void dump (void *p, int n)
+{
+	unsigned char *p1 = p;
+	while (n--)
+	{
+		printf("%p - %02x\n", p1, *p1);
+		p1++;
+	}
+
+}
+
 int isLittleEndian()
 {
 	int b = 1;
@@ -12,9 +23,29 @@ int isLittleEndian()
 	return *(char*)&b;	
 }
 
-/*
-int trocaBigLit (unsigned int x) {
-	return (x>>24) | ((x>>8) & 0xFF00) | ((x<<8) & 0xFF0000) | (x<<24);
+unsigned int trocaOrdem (unsigned int x)
+{
+		//printf("01-D:\n");
+	unsigned char d = x>>24;
+		//dump (&d, sizeof(d));
+		//printf("---\n02-C:\n");
+	unsigned char c = (x>>16)&0xFF;
+		//dump (&c, sizeof(c));
+		//printf("---\n03-B:\n");
+	unsigned char b = (x>>8)&0xFF;
+		//dump (&b, sizeof(b));
+		//printf("---\n04-A:\n");
+	unsigned char a = x&0xFF;
+		//dump (&a, sizeof(a));
+	
+		/*printf("\nX:\n");
+	
+		//dump (&x, sizeof(x));
+		unsigned int y = (a<<24) + (b<<16) + (c<<8) + d;
+		printf("\nY:\n");
+		dump (&y, sizeof(y));*/
+	
+	return (a<<24) + (b<<16) + (c<<8) + d;
 }
 
 int contaBits(char s){
@@ -50,4 +81,4 @@ int utf8_32(FILE *arq_entrada, FILE *arq_saida){
 }
 
 int utf32_8(FILE *arq_entrada, FILE *arq_saida){
-}*/
+}
