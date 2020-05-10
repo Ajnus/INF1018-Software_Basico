@@ -5,7 +5,7 @@
 //#include <stdlib.h>
 #include "conv_utf.h"
 
-char isLittleEndian()
+int isLittleEndian()
 {
 	int b = 1;
 	
