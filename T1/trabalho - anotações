@@ -8,7 +8,7 @@ U+0080 a U+07FF    | (128 a 2047[2^11 - 1])| 110xxxxx 10xxxxxx (8 a 11 bits)
 U+0800 a U+FFFF	   | (2^11 a 2^16-1)  	   | 1110xxxx 10xxxxxx 10xxxxxx (12 a 16 bits)
 U+10000 a U+10FFFF | (2^16 a 2^21-1)       | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx (16 ~ 21)
 
-BOM (u+FEFF): indica conteúido do arquivo como UNICODE. vem no início do mesmo
+BOM (u+FEFF): indica conteúdo do arquivo como UNICODE. vem no início do mesmo
 distingue little de big endian, não faz sentido para UTF-8 pois a mesma só usa 1 byte.(?) pois tem bits que não representam valores(?)
 
 |   Tipo do Arquivo     |     Bytes   |
