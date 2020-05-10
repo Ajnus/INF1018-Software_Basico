@@ -5,30 +5,11 @@
 //#include <stdlib.h>
 #include "conv_utf.h"
 
-/*void dump (void *p, int n)
+char isLittleEndian()
 {
-	unsigned char *p1 = p;
-	while (n--)
-	{
-		printf("%p - %02x\n", p1, *p1);
-		p1++;
-	}
-
-}*/
-
-/**********************************************************************
-* return 1 -> Little						     *
-* return 0 -> Big						    * 
-*******************************************************************/
-int isLittleEndian()
-{
-	unsigned int b = 1;
+	int b = 1;
 	
-	/*(dump(&b, sizeof(b));
-	b = b<<24;
-	dump(&b, sizeof(b));*/
-	
-	return b<<24;	
+	return *(char*)&b;	
 }
 
 /*
