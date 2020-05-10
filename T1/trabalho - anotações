@@ -52,9 +52,10 @@ ESPAÇO  = 20			|		  20
 ***************** LITTLE ENDIAN ***************** 
 
 tamanho total:
-UTF-8 tem 6 bytes a mais de informação que o tamanho total. Por quê?
+<strike>UTF-8 tem 6 bytes a mais de informação que o tamanho total. Por quê?
 UTF-32 tem 24 bytes a mais de informação que o tamanho total. Por quê?
-(x4)
+(x4)</strike>
+R: está em HEX, os valores batem.
 
 Abrir arquivo:
 FILE *fopen(char *path, char *mode);
