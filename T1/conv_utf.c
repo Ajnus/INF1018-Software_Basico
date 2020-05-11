@@ -145,7 +145,7 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 			
 		if (BOM != 0xFFFE0000)
 		{
-			fputs ("erro de leitura de arquivo.", stderr);
+			fputs ("erro de leitura de arquivo. (BOM)", stderr);
 			return -1;
 		}
 		rewind (arq_entrada);
