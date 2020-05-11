@@ -112,7 +112,7 @@ int utf8_32(FILE *arq_entrada, FILE *arq_saida){
             		}
 
 		}
-		fwrite(&temp,1,sizeof(int),arq_saida);	
+		fwrite(&carac32,1,sizeof(int),arq_saida);	
 	}
 	dump(&temp,sizeof(int));
 	
