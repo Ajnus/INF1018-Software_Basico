@@ -98,7 +98,7 @@ int utf8_32(FILE *arq_entrada, FILE *arq_saida){
 			aux=(unsigned int)temp;
 			carac32=carac32 |aux;
        			
-			while(--i){
+			for(;i!=0;--i){
                 		temp = fread(&temp,1,1,arq_entrada);
                 		temp = temp << 2;
 
