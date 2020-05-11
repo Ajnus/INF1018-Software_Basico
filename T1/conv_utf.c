@@ -71,7 +71,7 @@ int utf8_32(FILE *arq_entrada, FILE *arq_saida){
 	int insBom;	
 	
 	if (arq_entrada==NULL || arq_saida==NULL){
-		printf("Erro de leitura do arquivo\n");
+		fputs ("erro de leitura de arquivo.",stderr);
 		return -1;
 	}
 	bom=isLittleEndian();
@@ -81,7 +81,6 @@ int utf8_32(FILE *arq_entrada, FILE *arq_saida){
 		insBom=0x0000FEFF;
 	i=contaBits(c);
 	
-						// LEITURA
 	// determina tamanho dos arquivos
 	fseek (arq_entrada , 0, SEEK_END);
 	lSize = ftell (arq_entrada);
@@ -112,13 +111,14 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 {
 	long lSize;
 	char* buffer;
-
+	
 	if (arq_entrada==NULL || arq_saida==NULL)
 	{
-		printf("Erro de leitura do arquivo\n");
+		fputs ("erro de leitura de arquivo.",stderr);
 		return -1;
 	}
-					// LEITURA
+	
+		// LEITURA
 	// determina tamanho dos arquivos
 	fseek (arq_entrada, 0, SEEK_END);
 	lSize = ftell (arq_entrada);
@@ -128,14 +128,17 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
   	// aloca memória para conter todo o arquivo
   	buffer = (char*) malloc (sizeof(char)*lSize);
   		if (buffer == NULL) {fputs ("erro de memória.",stderr); exit (2);}
+  		
+  	// avalia BOM
   	
-  	// insere texto do arquivo no *buffer	
+  	
+  	// insere texto do arquivo no buffer	
 	fread(buffer, 4, lSize/4, arq_entrada);
 	printf("O tamanho de buffer2 eh: %ld\n", lSize);
 	
 	//print e comparação com dump
 	int i;
-	for (i = 0; i < lSize; i++)
+	for (i = 4; i < lSize; i++)
 		printf("%c", buffer[i]);
 	printf("\n\n");			
 	dump (&buffer[0], lSize);
