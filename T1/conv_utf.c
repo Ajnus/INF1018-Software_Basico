@@ -91,7 +91,7 @@ int utf8_32(FILE *arq_entrada, FILE *arq_saida){
   	buffer = (char*) malloc (sizeof(char)*lSize);
   		if (buffer == NULL) {fputs ("erro de memória.", stderr); exit (2);}
 
-   	// insere texto do arquivo no *buffer
+   	// insere texto do arquivo no buffer
 	fread(buffer, 1, lSize, arq_entrada);
 		printf("O tamanho de buffer eh: %ld\n", strlen(buffer));
 		
@@ -153,7 +153,7 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 	}
 			
   	
-  	// insere texto do arquivo no buffer	
+  	// insere BOM + texto do arquivo no buffer	
 	fread(buffer, 4, lSize/4, arq_entrada);
 	printf("O tamanho de buffer eh: %ld\n", lSize);
 	
