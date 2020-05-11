@@ -148,11 +148,13 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 			fputs ("BOM inválido.", stderr);
 			return -1;
 		}
-		rewind (arq_entrada);
+		rewind (arq_entrada); // restaura ponteiro para início do arquivo
 	}
+	else
+		fputs ("Não foi possível ler o BOM.", stderr);
 			
   	
-  	// insere texto do arquivo no buffer	
+  	// insere BOM + texto do arquivo no buffer	
 	fread(buffer, 4, lSize/4, arq_entrada);
 	printf("O tamanho de buffer2 eh: %ld\n", lSize);
 	
