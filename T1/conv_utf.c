@@ -110,9 +110,10 @@ int utf8_32(FILE *arq_entrada, FILE *arq_saida){
 int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 {
 	long lSize;
-	char* buffer;
+	int* buffer;
 	char ordenacao;
 	unsigned int BOM = 0;
+	//int qtdBytes = 0;
 	
 	if (arq_entrada==NULL || arq_saida==NULL)
 	{
@@ -128,7 +129,7 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
   	rewind (arq_entrada);
   	
   	// aloca memória para conter todo o arquivo
-  	buffer = (char*) malloc (sizeof(char)*lSize);
+  	buffer = (int*) malloc (sizeof(int)*lSize/4);
   		if (buffer == NULL) {fputs ("erro de memória.", stderr); exit (2);}
   		
   	ordenacao = isLittleEndian();
@@ -148,26 +149,29 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 			fputs ("BOM inválido.", stderr);
 			return -1;
 		}
-		rewind (arq_entrada); // restaura ponteiro para início do arquivo
-	}
-	else
-	{
-		fputs ("Não foi possível ler o BOM.", stderr);
-		return -1;
+		rewind (arq_entrada);
 	}
 			
   	
-  	// insere BOM + texto do arquivo no buffer	
+  	// insere texto do arquivo no buffer	
 	fread(buffer, 4, lSize/4, arq_entrada);
-	printf("O tamanho de buffer2 eh: %ld\n", lSize);
+	printf("O tamanho de buffer eh: %ld\n", lSize);
 	
 	//print e comparação com dump
 	int i;
-	for (i = 0; i < lSize; i++)
+	for (i = 1; i < lSize/4; i++)
 		printf("%c", buffer[i]);
 	printf("\n\n");			
 	dump (&buffer[0], lSize);
 	printf("---\n");
+	
+	if (ordenacao) // se Little Endian, inverte para escrita
+		for (i = 1; i < lSize/4; i++)
+			buffer[i] = inverte32(buffer[i]);
+		
+	dump (&buffer[0], lSize);
+	
+	
 	
 	
 	
