@@ -151,7 +151,10 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 		rewind (arq_entrada); // restaura ponteiro para início do arquivo
 	}
 	else
+	{
 		fputs ("Não foi possível ler o BOM.", stderr);
+		return -1;
+	}
 			
   	
   	// insere BOM + texto do arquivo no buffer	
