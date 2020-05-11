@@ -137,15 +137,15 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
   	// avalia BOM
   	if (fread(&BOM, 4, 1, arq_entrada))
   	{
-  			//printf("BOM: %02X\n", BOM);
+  				//printf("BOM: %02X\n", BOM);
 		if (ordenacao)
 			BOM=inverte32(BOM);
 			
-			//printf("BOM: %02X\n", BOM); 
+				//printf("BOM: %02X\n", BOM); 
 			
 		if (BOM != 0xFFFE0000)
 		{
-			fputs ("erro de leitura de arquivo. (BOM)", stderr);
+			fputs ("BOM inválido.", stderr);
 			return -1;
 		}
 		rewind (arq_entrada);
