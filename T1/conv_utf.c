@@ -24,7 +24,7 @@ int isLittleEndian()
 	return *(char*)&b;	
 }
 
-unsigned int trocaOrdem (unsigned int x)
+unsigned int inverte32 (unsigned int x)
 {
 		//printf("01-D:\n");
 	unsigned char d = x>>24;
@@ -71,7 +71,7 @@ int utf8_32(FILE *arq_entrada, FILE *arq_saida){
 	int insBom;	
 	
 	if (arq_entrada==NULL || arq_saida==NULL){
-		fputs ("erro de leitura de arquivo.",stderr);
+		fputs ("erro de leitura de arquivo.", stderr);
 		return -1;
 	}
 	bom=isLittleEndian();
@@ -89,7 +89,7 @@ int utf8_32(FILE *arq_entrada, FILE *arq_saida){
   	
   	// aloca memória para conter todo o arquivo
   	buffer = (char*) malloc (sizeof(char)*lSize);
-  		if (buffer == NULL) {fputs ("erro de memória.",stderr); exit (2);}
+  		if (buffer == NULL) {fputs ("erro de memória.", stderr); exit (2);}
 
    	// insere texto do arquivo no *buffer
 	fread(buffer, 1, lSize, arq_entrada);
@@ -111,10 +111,12 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 {
 	long lSize;
 	char* buffer;
+	char ordenacao;
+	unsigned int BOM = 0;
 	
 	if (arq_entrada==NULL || arq_saida==NULL)
 	{
-		fputs ("erro de leitura de arquivo.",stderr);
+		fputs ("erro de leitura de arquivo.", stderr);
 		return -1;
 	}
 	
@@ -127,10 +129,27 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
   	
   	// aloca memória para conter todo o arquivo
   	buffer = (char*) malloc (sizeof(char)*lSize);
-  		if (buffer == NULL) {fputs ("erro de memória.",stderr); exit (2);}
+  		if (buffer == NULL) {fputs ("erro de memória.", stderr); exit (2);}
+  		
+  	ordenacao = isLittleEndian();
+  		printf("Little Endian: %d\n", ordenacao); 
   		
   	// avalia BOM
-  	
+  	if (fread(&BOM, 4, 1, arq_entrada))
+  	{
+  			//printf("BOM: %02X\n", BOM);
+		if (ordenacao)
+			BOM=inverte32(BOM);
+			
+			//printf("BOM: %02X\n", BOM); 
+			
+		if (BOM != 0xFFFE0000)
+		{
+			fputs ("erro de leitura de arquivo. (BOM)", stderr);
+			return -1;
+		}
+	}
+			
   	
   	// insere texto do arquivo no buffer	
 	fread(buffer, 4, lSize/4, arq_entrada);
