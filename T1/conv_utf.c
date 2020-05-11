@@ -11,7 +11,7 @@ void dump (void *p, int n)
 	unsigned char *p1 = p;
 	while (n--)
 	{
-		printf("%p - %02x\n", p1, *p1);
+		printf("%p - %02X\n", p1, *p1);
 		p1++;
 	}
 
@@ -132,7 +132,7 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
   		if (buffer == NULL) {fputs ("erro de memória.", stderr); exit (2);}
   		
   	ordenacao = isLittleEndian();
-  		printf("Little Endian: %d\n", ordenacao); 
+  		//printf("Little Endian: %d\n", ordenacao); 
   		
   	// avalia BOM
   	if (fread(&BOM, 4, 1, arq_entrada))
@@ -145,9 +145,10 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 			
 		if (BOM != 0xFFFE0000)
 		{
-			fputs ("erro de leitura de arquivo. (BOM)", stderr);
+			fputs ("erro de leitura de arquivo.", stderr);
 			return -1;
 		}
+		rewind (arq_entrada);
 	}
 			
   	
@@ -157,7 +158,7 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 	
 	//print e comparação com dump
 	int i;
-	for (i = 4; i < lSize; i++)
+	for (i = 0; i < lSize; i++)
 		printf("%c", buffer[i]);
 	printf("\n\n");			
 	dump (&buffer[0], lSize);
