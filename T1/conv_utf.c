@@ -143,7 +143,7 @@ int utf8_32(FILE *arq_entrada, FILE *arq_saida){
 	//return 0;	
 }
 
-nt utf32_8(FILE* arq_entrada, FILE* arq_saida)
+int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 {
 	long rSize;
 	long wSize;
