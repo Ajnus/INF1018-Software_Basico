@@ -151,11 +151,6 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 	int* bufferWrite;
 	char ordenacao;
 	unsigned int BOM = 0;
-	//int qtdBitsSig = 0;
-	//int N = 24;
-	//char bitBuffer[24];
-	//ic* bufferUnion;
-	//char hexTemp[];
 	
 	if (arq_entrada==NULL || arq_saida==NULL)
 	{
@@ -176,8 +171,6 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
   		if (bufferRead == NULL) {fputs ("erro de memória.", stderr); exit (2);}
   	bufferWrite = (int*) malloc ((sizeof(int)*wSize));
   		if (bufferWrite == NULL) {fputs ("erro de memória.", stderr); exit (2);}	
-  	/*bufferUnion = (ic*) malloc (sizeof(ic)*lSize);
-  		if (bufferUnion == NULL) {fputs ("erro de memória.", stderr); exit (2);}*/
   		
   	ordenacao = isLittleEndian();
   		//printf("Little Endian: %d\n", ordenacao); 
