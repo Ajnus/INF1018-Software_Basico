@@ -217,16 +217,9 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 	
 	
 	for (i = 1; i < rSize/4; i++)
-	{
 		if (ordenacao) // se Little Endian
 			bufferWrite[i-1] = inverte32(bufferRead[i]); // tranfere texto sem BOM
-			
-			//buffer[0] = inverte32(buffer[1])
-			//buffer[1] = inverte32(buffer[2])
-			//buffer[2] = inverte32(buffer[3])
-			//for (j = 0; j < 4; j++)
-			//bufferUnion[i-1].i = buffer[i]; 
-	}		
+
 			
 	printf("inverso int* buffer (sem BOM):\n");
 	for (i = 0; i < wSize/4; i++)
@@ -298,104 +291,14 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 		    varUTF8  = 0xF0808080 & 0xFFFFFFF;	// não faz nada
 		  }
 		
-		printf("varUTF8 só com 0's na frente eh:%08X\n", varUTF8);
+	printf("varUTF8 só com 0's na frente eh:%08X\n", varUTF8);
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-					//printf("conteudo de bufferWrite como char: %02X\n", *p);
-		p+=4;
-		
+	
+	//printf("conteudo de bufferWrite como char: %02X\n", *p);
+		p+=4;	
 	}
-		
-	/*printf("inverso int* bufferUnion:\n");
-	for (i = 0; i < lSize/4; i++)
-		printf("%02X|", bufferUnion[i].i);
-		printf("\n\n");
-		
-	int j = 0;
-		printf("inverso char* bufferUnion:\n");
-	for (i = 0; i < lSize/4; i++)
-	{
-		for (j=0; j<4; j++)
-			printf("%02X|", bufferUnion[i].c[j]);
 			
-	}
-		printf("\n\n");
-		
-	for (i = 1; i < lSize/4; i++)
-	{
-		for (j=0; j<4; j++)
-		{
-			num2stringOG(hexTemp, bufferUnion[i].c[j], 16, 24);
-			num2string(bitBuffer, hexTemp, 24);		
-			//dump(&bufferUnion[1], lSize-4);
-		}
-	}*/
-
-		
-			
-		
-	 	//printf("%s", binBuffer);
-
-		
-		// inverte para escrita
-		
-		//if (buffer[i] <= 0x007F)
-			
-		
-		//else if (buffer[i] <= 0x07FF)
-		
-		//else if (buffer[i] <= 0xFFFF)
-		//{
-		//	if (buffer[i] == 0xFEFF)
-		//		{puts ("BOM em posição inválida.", stderr); return -1;}
-				
-		//}
-		//if (buffer[i] <= 0x10FFFF)
-		//{	
-		
-		
-		
-		/*
-		int j =0;;
-		while (binBuffer[j] != 1)
-			j++;
-			
-		printf("\nj = %d\n", j);
-
-			
-		qtdBitsSig = 24 - j;
-			
-		int k = 21 - qtdBitsSig; 
-		printf("\nk = %d\n", k);
-		//}
-			
-			
-		
-		//else
-			//{fputs ("caractere não pertence a UTF-32.", stderr); return -1;} */
-			
-
-	//printf("hex to dec: %d\n", hextoDec(buffer[i]));
-
-	//printf("\n%s\n", bitBuffer);
-	
-		
-	
-	
 	free(bufferRead);
 	free(bufferWrite);
 	return 0;
