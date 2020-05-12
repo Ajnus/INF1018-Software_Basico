@@ -83,7 +83,7 @@ int utf32_8(FILE *arq_entrada, FILE *arq_saida):
 			calcular e preencher primeiro 0's a esquerda: 
 			n máximo de bits da seção da tabela(21) - número de bits significativos do número-> 
 				número de bits significativos do número:
-					vai no byte menos significativo:
+					vai no 2o byte menos significativo:
 					j=0									 // numero < 10FFFF, logo só testa a partir do 5o bit
 					 byte & 0x10 = 0x10? if true: break; if not: j++	 // 5o bit está setado 1?
 					 		(anterior/2)
