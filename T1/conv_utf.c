@@ -274,7 +274,7 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 		    break;
 		    
 		    case 1 :
-		    varUTF8  = 0xF0808080 & 0xFBFFF;	//     	                 11110(0)xx 10xxxxxx 10xxxxxx 10xxxxxx
+		    varUTF8  = 0xF0808080 & 0xFBFFFFFF;	//     	                 11110(0)xx 10xxxxxx 10xxxxxx 10xxxxxx
 		    break;
 		    
 		    default :
