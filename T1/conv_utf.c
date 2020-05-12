@@ -196,8 +196,8 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 	}
 			
   	
-  	// insere BOM+ texto do arquivo no buffer	
-	fread(bufferRead, 4, lSize, arq_entrada);
+  	// insere BOM + texto do arquivo no buffer	
+	fread(bufferRead, 4, lSize/4, arq_entrada);
 	printf("O tamanho de buffer eh: %ld bytes\n", lSize);
 	
 	//print e comparação com dump
