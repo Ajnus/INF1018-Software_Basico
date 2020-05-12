@@ -85,17 +85,17 @@ int utf32_8(FILE *arq_entrada, FILE *arq_saida):
 				número de bits significativos do número:
 					vai no 2o byte menos significativo:
 					j=3									 // numero < 10FFFF, logo só testa a partir do 5o bit
-					 byte & 0x10 = 0x10? if true: break; if not: j++	 // 5o bit está setado 1?
+					 byte & 0x10 = 0x10? if true: break; if not: j++	 // 5o bit está setado 1? qtdBitSig 21
 					 		(anterior/2)
-					 byte & 0x08 = 0x08? if true: break; if not: j++	 // 4o bit está setado 1?	
+					 byte & 0x08 = 0x08? if true: break; if not: j++	 // 4o bit está setado 1? qtdBitSig 20	
 					 		(anterior/2)					 	
-					 byte & 0x04 = 0x04? if true: break; if not: j++	 // 3o bit está setado 1?
+					 byte & 0x04 = 0x04? if true: break; if not: j++	 // 3o bit está setado 1? qtdBitSig 19
 					 		(anterior/2)
-					 byte & 0x02 = 0x02? if true: break; if not: j++	 // 2o bit está setado 1?
+					 byte & 0x02 = 0x02? if true: break; if not: j++	 // 2o bit está setado 1? qtdBitSig 18
 					 		(anterior/2)
-					 byte & 0x01 = 0x01  true		     // 1o bit ESTÁ setado 1. (10000 <= num < 10FFFF)
+					 byte & 0x01 = 0x01  true		     // 1o bit ESTÁ setado 1. (10000 <= num < 10FFFF)   17
 					 		(anterior/2)
-					 		
+
 
 					 qtdBitSig = 24-j (17) (varia de 17 a 21)
 
