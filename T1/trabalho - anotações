@@ -84,7 +84,7 @@ int utf32_8(FILE *arq_entrada, FILE *arq_saida):
 			n máximo de bits da seção da tabela(21) - número de bits significativos do número-> 
 				número de bits significativos do número:
 					vai no 2o byte menos significativo:
-					j=0									 // numero < 10FFFF, logo só testa a partir do 5o bit
+					j=3									 // numero < 10FFFF, logo só testa a partir do 5o bit
 					 byte & 0x10 = 0x10? if true: break; if not: j++	 // 5o bit está setado 1?
 					 		(anterior/2)
 					 byte & 0x08 = 0x08? if true: break; if not: j++	 // 4o bit está setado 1?	
@@ -95,7 +95,7 @@ int utf32_8(FILE *arq_entrada, FILE *arq_saida):
 					 		(anterior/2)
 					 byte & 0x01 = 0x01  true		     // 1o bit ESTÁ setado 1. (10000 <= num < 10FFFF)
 					 		(anterior/2)
-					 j+=3									// numero < 10FFFF, logo só testa a partir do 5o bit
+					 		
 
 					 qtdBitSig = 24-j (17) (varia de 17 a 21)
 
