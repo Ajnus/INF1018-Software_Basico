@@ -102,20 +102,20 @@ int utf32_8(FILE *arq_entrada, FILE *arq_saida):
 					 21 - qtdSig = 4 // n máximo de bits da seção da tabela(21) - número de bits significativos do número -> qtd de 0's
 
 					 if qtdZeros = 4
-					 0xF0808080  & 11111(000) 11(0)11111 11111111	(qtdSig = 17)
-					 			 & F8DFFF
+					 0xF0808080  & 11111(000) 11(0)11111 11111111 1111 1111	    (qtdSig = 17)
+					 			 & F8DFFFFF
 					 if qtdZeros = 3
-					 0xF0808080  & 1111 1(000) 1111 1111 1111 1111    (qtdSig = 18)
-					 			 & F8FFFF (anterior + 0x2000)
+					 0xF0808080  & 1111 1(000) 1111 1111 1111 1111 1111 1111    (qtdSig = 18)
+					 			 & F8FFFFFF (anterior + 0x2000)
 					 if qtdZeros = 2
-					 0xF0808080  & 1111 1(00)1 1111 1111 1111 1111    (qtdSig = 19)
-					 			 & F9FFFF (anterior + 0x10000)
+					 0xF0808080  & 1111 1(00)1 1111 1111 1111 1111 1111 1111    (qtdSig = 19)
+					 			 & F9FFFFFF (anterior + 0x10000)
 					 if qtdZeros = 1
-					 0xF0808080  & 1111 1(0)11 1111 1111 1111 1111    (qtdSig = 20)
-					 			 & FBFFF  (anterior + 0x20000)
+					 0xF0808080  & 1111 1(0)11 1111 1111 1111 1111 1111 1111    (qtdSig = 20)
+					 			 & FBFFFFFF  (anterior + 0x20000)
 					 if qtdZeros = 0
-					 0xF0808080  & 1111 1111 1111 1111 1111 1111    (qtdSig = 21)  | ou nem faça nada
-					 			 & F4FFF  (anterior + 0x40000) 					   | ops, nem faz nada
+					 0xF0808080  & 1111 1111 1111 1111 1111 1111 1111 1111    (qtdSig = 21)  | ou nem faça nada
+					 			 & FFFFFFF  (anterior + 0x40000) 					            | ops, nem faz nada
 
 					 	*não vale a pena loopar, fazer case/switch
 					 

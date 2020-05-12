@@ -143,9 +143,10 @@ int utf8_32(FILE *arq_entrada, FILE *arq_saida){
 	//return 0;	
 }
 
-int utf32_8(FILE* arq_entrada, FILE* arq_saida)
+nt utf32_8(FILE* arq_entrada, FILE* arq_saida)
 {
-	long lSize;
+	long rSize;
+	long wSize;
 	int* bufferRead;
 	int* bufferWrite;
 	char ordenacao;
@@ -163,16 +164,17 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 	}
 	
 		// LEITURA
-	// determina tamanho do arquivo de entrada
+	// determina tamanho do arquivo de entrada e de saída
 	fseek (arq_entrada, 0, SEEK_END);
-	lSize = ftell (arq_entrada);
-		printf("O tamanho de lSize eh: %ld\n", lSize);
+	rSize = ftell (arq_entrada);
+	wSize = rSize - 4; // texto sem BOM
+		printf("O tamanho de rSize eh: %ld\n", rSize);
   	rewind (arq_entrada);
   	
   	// aloca memória para conter todo o arquivo
-  	bufferRead = (int*) malloc (sizeof(int)*lSize);
+  	bufferRead = (int*) malloc (sizeof(int)*rSize);
   		if (bufferRead == NULL) {fputs ("erro de memória.", stderr); exit (2);}
-  	bufferWrite = (int*) malloc ((sizeof(int)*lSize)-4);
+  	bufferWrite = (int*) malloc ((sizeof(int)*wSize));
   		if (bufferWrite == NULL) {fputs ("erro de memória.", stderr); exit (2);}	
   	/*bufferUnion = (ic*) malloc (sizeof(ic)*lSize);
   		if (bufferUnion == NULL) {fputs ("erro de memória.", stderr); exit (2);}*/
@@ -197,24 +199,24 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 			
   	
   	// insere BOM + texto do arquivo no buffer	
-	fread(bufferRead, 4, lSize/4, arq_entrada);
-	printf("O tamanho de buffer eh: %ld bytes\n", lSize);
+	fread(bufferRead, 4, rSize/4, arq_entrada);
+	printf("O tamanho de buffer eh: %ld bytes\n", rSize);
 	
 	//print e comparação com dump
 	int i;
-	for (i = 0; i < lSize/4; i++)
+	for (i = 0; i < rSize/4; i++)
 		printf("%c", bufferRead[i]);
 		printf("\n\n");
 		
 		printf("int* buffer:\n");		
-	for (i = 0; i < lSize/4; i++)
+	for (i = 0; i < rSize/4; i++)
 		printf("%08X|", bufferRead[i]);
 		
 		//dump (&buffer[0], lSize);
 		printf("\n\n");
 	
 	
-	for (i = 1; i < (lSize/4); i++)
+	for (i = 1; i < (rSize/4); i++)
 	{
 		if (ordenacao) // se Little Endian
 			bufferWrite[i-1] = inverte32(bufferRead[i]); // tranfere texto sem BOM
@@ -227,12 +229,112 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 	}		
 			
 	printf("inverso int* buffer (sem BOM):\n");
-	for (i = 0; i < (lSize/4)-1; i++)
+	for (i = 0; i < wSize; i++)
 		printf("%02X|", bufferWrite[i]);
 		printf("\n\n");
 		
-	printf("dump - tamanho do buffer: %ld\n", lSize-4);
-	dump (&bufferWrite[0], lSize-4);
+	printf("dump - tamanho do buffer: %ld\n", wSize);
+	dump (&bufferWrite[0], wSize);
+	
+	int j = 0;
+	i=0;
+	unsigned char *p;
+	int qtdBitSig;
+	int qtdZeros;
+	unsigned int varUTF8;
+	p = bufferWrite;
+	while (wSize--)
+	{
+	
+	
+	
+	/*for j = 0;
+		if ((*p & 0x10) != 0x10)
+		{
+			j++;
+		}
+		
+		else if ((*p & 0x08) == 0x08)
+		
+		else if ((*p & 0x04) == 0x04)
+		
+		else if ((*p & 0x02) == 0x02)
+		
+		
+		+3*/
+		
+		//printf("*p eh: %02X\n", *p);
+		if ((0x01 & 0x10) == 0x10)
+		{
+			j=3;	// bit mais sig na 5a posicao
+		}
+		else if ((0x01 & 0x08) == 0x08)
+		{
+			j=4;	// bit mais sig na 4a posicao
+		}
+		else if ((0x01 & 0x04) == 0x04)
+		{
+			j=5;	// bit mais sig na 3a posicao
+		}
+		else if ((0x01 & 0x02) == 0x02)
+		{
+			j=6;	// bit mais sig na 2a posicao
+		}
+		else
+			j = 7; 	// bit mais sig na 1a posicao
+			
+		
+		//printf("saiu.\n");			
+		printf("j saida = %d\n", j);
+		printf("i saida = %d\n", i);
+		qtdBitSig = 24 - j;
+		printf("qtdBitSig = %d\n", qtdBitSig);
+		
+		qtdZeros = 21 - qtdBitSig;
+		printf("qtdZeros = %d\n", qtdZeros);			
+		switch (qtdZeros)
+		{
+		    case 4 :
+		    varUTF8  = 0xF0808080 & 0xF8DFFFFF;		 			 
+		    break;
+		    
+		    case 3 :
+		    varUTF8  = 0xF0808080 & 0xF8FFFFFF;
+		    break;
+		    
+		    case 2 :
+		    varUTF8  = 0xF0808080 & 0xF9FFFFFF;
+		    break;
+		    
+		    case 1 :
+		    varUTF8  = 0xF0808080 & 0xFBFFF;
+		    break;
+		    
+		    default :
+		    varUTF8  = 0xF0808080 & 0xFFFFFFF;	// não faz nada
+		  }
+		
+		printf("varUTF8 só com 0's na frente eh:%08X\n", varUTF8);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+					//printf("conteudo de bufferWrite como char: %02X\n", *p);
+		p+=4;
+		
+	}
 		
 	/*printf("inverso int* bufferUnion:\n");
 	for (i = 0; i < lSize/4; i++)
