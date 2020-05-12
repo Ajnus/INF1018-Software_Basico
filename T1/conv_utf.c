@@ -216,7 +216,7 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 		printf("\n\n");
 	
 	
-	for (i = 1; i < (rSize/4); i++)
+	for (i = 1; i < rSize/4; i++)
 	{
 		if (ordenacao) // se Little Endian
 			bufferWrite[i-1] = inverte32(bufferRead[i]); // tranfere texto sem BOM
@@ -229,7 +229,7 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 	}		
 			
 	printf("inverso int* buffer (sem BOM):\n");
-	for (i = 0; i < wSize; i++)
+	for (i = 0; i < wSize/4; i++)
 		printf("%02X|", bufferWrite[i]);
 		printf("\n\n");
 		
@@ -245,23 +245,6 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 	p = bufferWrite;
 	while (wSize--)
 	{
-	
-	
-	
-	/*for j = 0;
-		if ((*p & 0x10) != 0x10)
-		{
-			j++;
-		}
-		
-		else if ((*p & 0x08) == 0x08)
-		
-		else if ((*p & 0x04) == 0x04)
-		
-		else if ((*p & 0x02) == 0x02)
-		
-		
-		+3*/
 		
 		//printf("*p eh: %02X\n", *p);
 		if ((0x01 & 0x10) == 0x10)
@@ -295,19 +278,20 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 		switch (qtdZeros)
 		{
 		    case 4 :
-		    varUTF8  = 0xF0808080 & 0xF8DFFFFF;		 			 
+		    varUTF8  = 0xF0808080 & 0xF8DFFFFF;	// molde + 0's na frente 11110(000) 10(0)xxxxx 10xxxxxx 10xxxxxx
+		    //varUTF8 += 0x0001D11E	 			 
 		    break;
 		    
 		    case 3 :
-		    varUTF8  = 0xF0808080 & 0xF8FFFFFF;
+		    varUTF8  = 0xF0808080 & 0xF8FFFFFF;	//                       11110(000) 10xxxxxx 10xxxxxx 10xxxxxx
 		    break;
 		    
 		    case 2 :
-		    varUTF8  = 0xF0808080 & 0xF9FFFFFF;
+		    varUTF8  = 0xF0808080 & 0xF9FFFFFF;	//                       11110(00)x 10xxxxxx 10xxxxxx 10xxxxxx
 		    break;
 		    
 		    case 1 :
-		    varUTF8  = 0xF0808080 & 0xFBFFF;
+		    varUTF8  = 0xF0808080 & 0xFBFFF;	//                       11110(0)xx 10xxxxxx 10xxxxxx 10xxxxxx
 		    break;
 		    
 		    default :
