@@ -72,7 +72,7 @@ int utf8_32(FILE *arq_entrada, FILE *arq_saida){
 	
 	if (arq_entrada==NULL || arq_saida==NULL)
 	{
-		printf("erro de leitura de arquivo.");
+		fputs ("erro de leitura de arquivo.", stderr);
 		return -1;
 	}
 	bom=isLittleEndian();
