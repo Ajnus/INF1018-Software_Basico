@@ -76,47 +76,11 @@ int utf32_8(FILE *arq_entrada, FILE *arq_saida):
 
 
           0x0001D11E    ->      0xF09D849E ("a ordem de armazenamento não faz sentido 					                   para arquivos UTF-8")
- 0    0   |  0    1    D    1    1    E
-0000 0000 | 00000001 11010001 00011110 
+ 0    0    0    1    D    1    1    E
+0000 0000 0000 0001 1101 0001 0001 1110 
 0001D11E-> tabela -> U+10000 a U+10FFFF | (2^16 a 2^21-1)| 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx (usa 4 bytes)
 0001D11E -> 11110|3BITS 10|6BITS 10|6BITS 10|6BITS -> 
-			calcular e preencher primeiro 0's a esquerda: 
-			n máximo de bits da seção da tabela - número de bits significativos do número-> 
-				número de bits significativos do número:
-					vai no byte menos significativo:
-					k=3
-					 byte & 0x10 = 0x10? if not: k++
-					 byte & 0x08 = 0x08? if not: k++
-					 byte & 0x04 = 0x04? if not: k++
-					 byte & 0x02 = 0x02? if not: k++
-					 byte & 0x01 = 0x01 
-
-					 qtdBitSig = 24-k (17) (varia de 17 a 21)
-
-					 21 - qtdSig = 4
-
-					 if k = 4
-					 0xF0808080  & 11111(000) 11(0)11111 11111111	(qtdSig = 17)
-					 			 & F8DFFF
-					 if k = 3
-					 0xF0808080  & 1111 1(000) 1111 1111 1111 1111    (qtdSig = 18)
-					 			 & F8FFFF (anterior + 0x2000)
-					 if k = 2
-					 0xF0808080  & 1111 1(00)1 1111 1111 1111 1111    (qtdSig = 19)
-					 			 & F9FFFF (anterior + 0x10000)
-					 if k = 1
-					 0xF0808080  & 1111 1(0)11 1111 1111 1111 1111    (qtdSig = 20)
-					 			 & FBFFF  (anterior + 0x20000)
-					 if k = 0
-					 0xF0808080  & 1111 1111 1111 1111 1111 1111    (qtdSig = 21)  | ou nem faça nada
-					 			 & F4FFF  (anterior + 0x40000) 					   | ops, nem faz nada
-
-					 	*não vale a pena loopar, fazer case/switch
-					 
-
-
-
-			(21 - 17 = 4)
+			calcular e preencher primeiro 0's a esquerda: n máximo de bits da seção da tabela - número de bits significativos do número-> (21 - 17 = 4)
             11110|000   10011101 10000100 10011110 -> 
             1111 0000 1001 1101 1000 0100 1001 1110
               F    0    9   D    8    4    9    E  -> GG
