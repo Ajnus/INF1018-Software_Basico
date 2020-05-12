@@ -153,10 +153,7 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 	unsigned int BOM = 0;
 	
 	if (arq_entrada==NULL || arq_saida==NULL)
-	{
-		fputs ("erro de leitura de arquivo.", stderr);
-		return -1;
-	}
+		{fputs ("erro de leitura de arquivo.", stderr); return -1;}
 	
 		// LEITURA
 	// determina tamanho do arquivo de entrada e de saída
@@ -193,7 +190,7 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
   	
   	// insere BOM + texto do arquivo no buffer	
 	fread(bufferRead, 4, rSize/4, arq_entrada);
-	printf("O tamanho de buffer eh: %ld bytes\n", rSize);
+		printf("O tamanho de buffer eh: %ld bytes\n", rSize);
 	
 	//print e comparação com dump
 	int i;
@@ -214,13 +211,13 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 			bufferWrite[i-1] = inverte32(bufferRead[i]); // tranfere texto sem BOM
 
 			
-	printf("inverso int* buffer (sem BOM):\n");
+		printf("inverso int* buffer (sem BOM):\n");
 	for (i = 0; i < wSize/4; i++)
 		printf("%02X|", bufferWrite[i]);
 		printf("\n\n");
 		
-	printf("dump - tamanho do buffer: %ld\n", wSize);
-	dump (&bufferWrite[0], wSize);
+		printf("dump - tamanho do buffer: %ld\n", wSize);
+		dump (&bufferWrite[0], wSize);
 	
 	int j = 0;
 	i=0;
@@ -253,19 +250,19 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 			j = 7; 	// bit mais sig na 1a posicao
 			
 		
-		//printf("saiu.\n");			
-		printf("j saida = %d\n", j);
-		printf("i saida = %d\n", i);
+			//printf("saiu.\n");			
+			printf("j saida = %d\n", j);
+			printf("i saida = %d\n", i);
 		qtdBitSig = 24 - j;
-		printf("qtdBitSig = %d\n", qtdBitSig);
+			printf("qtdBitSig = %d\n", qtdBitSig);
 		
 		qtdZeros = 21 - qtdBitSig;
-		printf("qtdZeros = %d\n", qtdZeros);			
+			printf("qtdZeros = %d\n", qtdZeros);			
 		switch (qtdZeros)
 		{
 		    case 4 :
 		    varUTF8  = 0xF0808080 & 0xF8DFFFFF;	// molde + 0's na frente 11110(000) 10(0)xxxxx 10xxxxxx 10xxxxxx
-		    //varUTF8 += 0x0001D11E	 			 
+		    varUTF8 += 0x0001D11E & 0x1C0000	 			 
 		    break;
 		    
 		    case 3 :
@@ -284,11 +281,11 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 		    varUTF8  = 0xF0808080 & 0xFFFFFFF;	// não faz nada
 		  }
 		
-	printf("varUTF8 só com 0's na frente eh:%08X\n", varUTF8);
+			printf("varUTF8 só com 0's na frente eh:%08X\n", varUTF8);
 		
 		
 	
-	//printf("conteudo de bufferWrite como char: %02X\n", *p);
+			//printf("conteudo de bufferWrite como char: %02X\n", *p);
 		p+=4;	
 	}
 			
