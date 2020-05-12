@@ -76,38 +76,44 @@ int utf32_8(FILE *arq_entrada, FILE *arq_saida):
 
 
           0x0001D11E    ->      0xF09D849E ("a ordem de armazenamento não faz sentido 					                   para arquivos UTF-8")
- 0    0   |  0    1    D    1    1    E
-0000 0000 | 00000001 11010001 00011110 
+ 0    0   |   0     1   D   1    1   E
+0000 0000 | 000|0|0001 11010001 00011110 
 0001D11E-> tabela -> U+10000 a U+10FFFF | (2^16 a 2^21-1)| 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx (usa 4 bytes)
 0001D11E -> 11110|3BITS 10|6BITS 10|6BITS 10|6BITS -> 
 			calcular e preencher primeiro 0's a esquerda: 
-			n máximo de bits da seção da tabela - número de bits significativos do número-> 
+			n máximo de bits da seção da tabela(21) - número de bits significativos do número-> 
 				número de bits significativos do número:
 					vai no byte menos significativo:
-					j=3
-					 byte & 0x10 = 0x10? if not: j++
-					 byte & 0x08 = 0x08? if not: j++
-					 byte & 0x04 = 0x04? if not: j++
-					 byte & 0x02 = 0x02? if not: j++
-					 byte & 0x01 = 0x01 
+					j=0									 // numero < 10FFFF, logo só testa a partir do 5o bit
+					 byte & 0x10 = 0x10? if true: break; if not: j++	 // 5o bit está setado 1?
+					 		(anterior/2)
+					 byte & 0x08 = 0x08? if true: break; if not: j++	 // 4o bit está setado 1?	
+					 		(anterior/2)					 	
+					 byte & 0x04 = 0x04? if true: break; if not: j++	 // 3o bit está setado 1?
+					 		(anterior/2)
+					 byte & 0x02 = 0x02? if true: break; if not: j++	 // 2o bit está setado 1?
+					 		(anterior/2)
+					 byte & 0x01 = 0x01  true		     // 1o bit ESTÁ setado 1. (10000 <= num < 10FFFF)
+					 		(anterior/2)
+					 j+=3									// numero < 10FFFF, logo só testa a partir do 5o bit
 
-					 qtdBitSig = 24-k (17) (varia de 17 a 21)
+					 qtdBitSig = 24-j (17) (varia de 17 a 21)
 
-					 21 - qtdSig = 4
+					 21 - qtdSig = 4 // n máximo de bits da seção da tabela(21) - número de bits significativos do número -> qtd de 0's
 
-					 if k = 4
+					 if qtdZeros = 4
 					 0xF0808080  & 11111(000) 11(0)11111 11111111	(qtdSig = 17)
 					 			 & F8DFFF
-					 if k = 3
+					 if qtdZeros = 3
 					 0xF0808080  & 1111 1(000) 1111 1111 1111 1111    (qtdSig = 18)
 					 			 & F8FFFF (anterior + 0x2000)
-					 if k = 2
+					 if qtdZeros = 2
 					 0xF0808080  & 1111 1(00)1 1111 1111 1111 1111    (qtdSig = 19)
 					 			 & F9FFFF (anterior + 0x10000)
-					 if k = 1
+					 if qtdZeros = 1
 					 0xF0808080  & 1111 1(0)11 1111 1111 1111 1111    (qtdSig = 20)
 					 			 & FBFFF  (anterior + 0x20000)
-					 if k = 0
+					 if qtdZeros = 0
 					 0xF0808080  & 1111 1111 1111 1111 1111 1111    (qtdSig = 21)  | ou nem faça nada
 					 			 & F4FFF  (anterior + 0x40000) 					   | ops, nem faz nada
 
