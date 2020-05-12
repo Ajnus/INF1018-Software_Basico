@@ -61,26 +61,62 @@ int contaBits(char s){
 
 
 int utf8_32(FILE *arq_entrada, FILE *arq_saida){
-	char c;
-	unsigned int temp;
+	char temp;
 	unsigned int carac32;
 	int i;
-	long lSize;
-	char* buffer;
+	//long lSize;
+	//char* buffer;
+	unsigned int aux;
 	int bom;
 	int insBom;	
 	
-	if (arq_entrada==NULL || arq_saida==NULL){
-		fputs ("erro de leitura de arquivo.", stderr);
+	if (arq_entrada==NULL || arq_saida==NULL)
+	{
+		printf("erro de leitura de arquivo.");
 		return -1;
 	}
 	bom=isLittleEndian();
+	
 	if (bom==1)
 		insBom=0xFFFE0000;
+		
 	else
 		insBom=0x0000FEFF;
-	i=contaBits(c);
 	
+	fwrite(&insBom,sizeof(int),1,arq_saida);
+	
+	while(fread(&temp,1,1,arq_entrada)==1){
+		carac32=0;		
+		i=contaBits(temp);		
+		
+		if (i==0)				
+			temp= temp | carac32;		
+		else{
+			temp=temp<<(i+1);
+			temp=temp>>(i+1);
+			
+			aux=(unsigned int)temp;
+			carac32=carac32 |aux;
+       			
+			for(;i!=0;--i){
+                		temp = fread(&temp,1,1,arq_entrada);
+                		temp = temp << 2;
+
+                		aux = (unsigned int)temp;
+                		aux = aux << 24;
+                		aux = aux >> 24;
+                
+               		 	carac32 = carac32 << 8;
+                		carac32 = carac32 | aux;
+                		carac32 = carac32 >> 2; 
+            		}
+
+		}
+		fwrite(&temp,sizeof(int),1,arq_saida);	
+	}
+	dump(&temp,sizeof(int));
+	return 0;
+	/*
 	// determina tamanho dos arquivos
 	fseek (arq_entrada , 0, SEEK_END);
 	lSize = ftell (arq_entrada);
@@ -100,11 +136,11 @@ int utf8_32(FILE *arq_entrada, FILE *arq_saida){
   	dump (&buffer[0], lSize);
   	printf("---\n\n");
 
+	*/
 
 
-
-	free(buffer);
-	return 0;	
+	//free(buffer);
+	//return 0;	
 }
 
 int utf32_8(FILE* arq_entrada, FILE* arq_saida)
