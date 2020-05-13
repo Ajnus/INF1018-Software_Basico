@@ -147,8 +147,8 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 {
 	long rSize;
 	long wSize;
-	int* bufferRead;
-	int* bufferWrite;
+	unsigned int* bufferRead;
+	unsigned int* bufferWrite;
 	char ordenacao;
 	unsigned int BOM = 0;
 	
@@ -164,9 +164,9 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
   	rewind (arq_entrada);
   	
   	// aloca memória para conter todo o arquivo
-  	bufferRead = (int*) malloc (sizeof(int)*rSize);
+  	bufferRead = (unsigned int*) malloc (sizeof(unsigned int)*rSize);
   		if (bufferRead == NULL) {fputs ("erro de memória.", stderr); exit (2);}
-  	bufferWrite = (int*) malloc ((sizeof(int)*wSize));
+  	bufferWrite = (unsigned int*) malloc ((sizeof(unsigned int)*wSize));
   		if (bufferWrite == NULL) {fputs ("erro de memória.", stderr); exit (2);}	
   		
   	ordenacao = isLittleEndian();
@@ -216,96 +216,104 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 		printf("%02X|", bufferWrite[i]);
 		printf("\n\n");
 		
-		printf("dump - tamanho do buffer: %ld\n", wSize);
-		dump (&bufferWrite[0], wSize);
+		/*printf("dump - tamanho do buffer: %ld\n", wSize);
+		dump (&bufferWrite[0], wSize);*/
 	
 	int j = 0;
-	unsigned char *p;
+	i = 0;
 	int qtdBitSig;
 	int qtdZeros;
 	unsigned int varUTF8;
-	p = bufferWrite;
+	//unsigned int bufferTemp[] = {0x0001D11E, 0x555, 0x0002D11E};
+	/*for (i = 1; i <3; i++)
+		bufferTemp[i] = inverte32(bufferTemp[i]);*/
+	unsigned char *p = &bufferWrite;
 	while (wSize--)
 	{
-		
-		//printf("*p eh: %02X\n", *p);
-		if ((0x10 & 0x10) == 0x10)
+
+		if (bufferRead[i] >= 0x10000 && bufferRead[i] <= 0x10FFFF) 
 		{
-			j=3;	// bit mais sig na 5a posicao
-		}
-		else if ((0x10 & 0x08) == 0x08)
-		{
-			j=4;	// bit mais sig na 4a posicao
-		}
-		else if ((0x10 & 0x04) == 0x04)
-		{
-			j=5;	// bit mais sig na 3a posicao
-		}
-		else if ((0x10 & 0x02) == 0x02)
-		{
-			j=6;	// bit mais sig na 2a posicao
-		}
-		else
-			j = 7; 	// bit mais sig na 1a posicao
+			
+			printf("bufferRead[i] eh: %02X\n", bufferRead[i]);
+			printf("*p eh: %02X\n", *p+1);
+			if (((*p+1) & 0x10) == 0x10)
+			{
+				j=3;	// bit mais sig na 5a posicao
+			}
+			else if (((*p+1) & 0x08) == 0x08)
+			{
+				j=4;	// bit mais sig na 4a posicao
+			}
+			else if (((*p+1) & 0x04) == 0x04)
+			{
+				j=5;	// bit mais sig na 3a posicao
+			}
+			else if (((*p+1) & 0x02) == 0x02)
+			{
+				j=6;	// bit mais sig na 2a posicao
+			}
+			else
+				j = 7; 	// bit mais sig na 1a posicao
 			
 		
-			//printf("saiu.\n");			
-			printf("j saida = %d\n", j);
-		qtdBitSig = 24 - j;
-			printf("qtdBitSig = %d\n", qtdBitSig);
+				//printf("saiu.\n");			
+				printf("j saida = %d\n", j);
+			qtdBitSig = 24 - j;
+				printf("qtdBitSig = %d\n", qtdBitSig);
 		
-		qtdZeros = 21 - qtdBitSig;
-			printf("qtdZeros = %d\n", qtdZeros);			
-		switch (qtdZeros)
-		{
-		    case 4:
-		    varUTF8  = 0xF0808080 & 0xF8DFFFFF;			// molde + 0's na frente 11110(000) 10(0)xxxxx 10xxxxxx 10xxxxxx
-		    varUTF8 = varUTF8 | (0x0001D11E>>12)<<16;    	// anterior mais 2o byte preenchido	 			 
-		    varUTF8 = varUTF8 | ((0x0001D11E>>6)&0x3F)<<8;      // anterior mais 3o byte preenchido
-		    varUTF8 = varUTF8 | (0x0001D11E&0x3F);      	// anterior mais 4o byte preenchido
-		    
-		    break;
-		    
-		    case 3:
-		    varUTF8  = 0xF0808080 & 0xF8FFFFFF;	//   	  		                  11110(000) 10xxxxxx 10xxxxxx 10xxxxxx
-		    varUTF8 = varUTF8 | (0x0002D11E>>12)<<16;    	// anterior mais 2o byte preenchido	 			 
-		    varUTF8 = varUTF8 | ((0x0002D11E>>6)&0x3F)<<8;      // anterior mais 3o byte preenchido
-		    varUTF8 = varUTF8 | (0x0002D11E&0x3F);      	// anterior mais 4o byte preenchido
-		    break;
-		    
-		    case 2:
-		    varUTF8  = 0xF0808080 & 0xF9FFFFFF;	//    	        		           11110(00)x 10xxxxxx 10xxxxxx 10xxxxxx
-   		    varUTF8 = varUTF8 | (0x0008D11E>>18)<<24;    	// anterior mais 1o byte preenchido	  
-		    varUTF8 = varUTF8 | ((0x0008D11E>>12)&0x3F)<<16;    // anterior mais 2o byte preenchido	  
-		    varUTF8 = varUTF8 | ((0x0008D11E>>6)&0x3F)<<8;      // anterior mais 3o byte preenchido
-		    varUTF8 = varUTF8 | (0x0008D11E&0x3F);      	// anterior mais 4o byte preenchido
-		    break;
-		    
-		    case 1:
-		    varUTF8  = 0xF0808080 & 0xFBFFFFFF;	//		     	                 11110(0)xx 10xxxxxx 10xxxxxx 10xxxxxx
-		    varUTF8 = varUTF8 | (0x0008D11E>>18)<<24;    	// anterior mais 1o byte preenchido	  
-		    varUTF8 = varUTF8 | ((0x0008D11E>>12)&0x3F)<<16;    // anterior mais 2o byte preenchido	  
-		    varUTF8 = varUTF8 | ((0x0008D11E>>6)&0x3F)<<8;      // anterior mais 3o byte preenchido
-		    varUTF8 = varUTF8 | (0x0008D11E&0x3F);      	// anterior mais 4o byte preenchido
-		    break;
-		    
-		    case 0:
-		    varUTF8  = 0xF0808080;		//		Só molda sem inserir 0's 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-		    varUTF8 = varUTF8 | (0x0010D11E>>18)<<24;    	// anterior mais 1o byte preenchido	  
-		    varUTF8 = varUTF8 | ((0x0010D11E>>12)&0x3F)<<16;    // anterior mais 2o byte preenchido	  
-		    varUTF8 = varUTF8 | ((0x0010D11E>>6)&0x3F)<<8;      // anterior mais 3o byte preenchido
-		    varUTF8 = varUTF8 | (0x0010D11E&0x3F);      	// anterior mais 4o byte preenchido
-		    break;
-		    
-		    default:
-		    {fputs ("erro na leitura do valor UTF-32.", stderr); return -1;}
-		  }
+			qtdZeros = 21 - qtdBitSig;
+				printf("qtdZeros = %d\n", qtdZeros);			
+			switch (qtdZeros)
+			{
+			    case 4:
+			    varUTF8  = 0xF0808080 & 0xF8DFFFFF;			// molde+0's na frente 11110(000) 10(0)xxxxx 10xxxxxx 10xxxxxx
+			    varUTF8 = varUTF8 | (bufferRead[i]>>12)<<16;    	// anterior mais 2o byte preenchido
+			    varUTF8 = varUTF8 | ((bufferRead[i]>>6)&0x3F)<<8;      // anterior mais 3o byte preenchido
+			    varUTF8 = varUTF8 | (bufferRead[i]&0x3F);      	// anterior mais 4o byte preenchido
+			    
+			    break;
+			    
+			    case 3:
+			    varUTF8  = 0xF0808080 & 0xF8FFFFFF;	                //   	 	         11110(000) 10xxxxxx 10xxxxxx 10xxxxxx
+			    varUTF8 = varUTF8 | (bufferRead[i]>>12)<<16;    	// anterior mais 2o byte preenchido
+			    varUTF8 = varUTF8 | ((bufferRead[i]>>6)&0x3F)<<8;   // anterior mais 3o byte preenchido
+			    varUTF8 = varUTF8 | (bufferRead[i]&0x3F);      	// anterior mais 4o byte preenchido
+			    break;
+			    
+			    case 2:
+			    varUTF8  = 0xF0808080 & 0xF9FFFFFF;	                //    	                 11110(00)x 10xxxxxx 10xxxxxx 10xxxxxx
+	   		    varUTF8 = varUTF8 | (bufferRead[i]>>18)<<24;    	// anterior mais 1o byte preenchido	  
+			    varUTF8 = varUTF8 | ((bufferRead[i]>>12)&0x3F)<<16;    // anterior mais 2o byte preenchido	  
+			    varUTF8 = varUTF8 | ((bufferRead[i]>>6)&0x3F)<<8;      // anterior mais 3o byte preenchido
+			    varUTF8 = varUTF8 | (bufferRead[i]&0x3F);      	// anterior mais 4o byte preenchido
+			    break;
+			    
+			    case 1:
+			    varUTF8  = 0xF0808080 & 0xFBFFFFFF;	                //		         11110(0)xx 10xxxxxx 10xxxxxx 10xxxxxx
+			    varUTF8 = varUTF8 | (bufferRead[i]>>18)<<24;    	// anterior mais 1o byte preenchido	  
+			    varUTF8 = varUTF8 | ((bufferRead[i]>>12)&0x3F)<<16;    // anterior mais 2o byte preenchido	  
+			    varUTF8 = varUTF8 | ((bufferRead[i]>>6)&0x3F)<<8;      // anterior mais 3o byte preenchido
+			    varUTF8 = varUTF8 | (bufferRead[i]&0x3F);      	// anterior mais 4o byte preenchido
+			    break;
+			    
+			    case 0:
+			    varUTF8  = 0xF0808080;		//		Só molda sem inserir 0's   11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+			    varUTF8 = varUTF8 | (bufferRead[i]>>18)<<24;    	// anterior mais 1o byte preenchido	  
+			    varUTF8 = varUTF8 | ((bufferRead[i]>>12)&0x3F)<<16;    // anterior mais 2o byte preenchido	  
+			    varUTF8 = varUTF8 | ((bufferRead[i]>>6)&0x3F)<<8;      // anterior mais 3o byte preenchido
+			    varUTF8 = varUTF8 | (bufferRead[i]&0x3F);      	// anterior mais 4o byte preenchido
+			    break;
+			    
+			    default:
+			    {fputs ("erro na leitura do valor UTF-32.", stderr); return -1;}
+			  }
 		
 			printf("Valor original convertido para UTF-8 e: %08X\n", varUTF8);
-		
+		}		
 		
 	
 			//printf("conteudo de bufferWrite como char: %02X\n", *p);
+		i++;
 		p+=4;	
 	}
 			
