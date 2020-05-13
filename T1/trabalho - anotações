@@ -143,12 +143,26 @@ int utf32_8(FILE *arq_entrada, FILE *arq_saida):
 				  0 0000 0111 0100 0100
 				 &0 0000 0000 0011 1111 (0x3F)			// limpa excesso
 				  0 0000 0000 0000 0100					// 6 bits a serem encaixados
-				  	   (NESSE CASO) 0x04       		    // confere
+				  	   (NESSE CASO) 0x04       		    
 
 			  1111 0000 1001 1101 10xxxxxx 10xxxxxx     // num com 2o byte preenchido
 			| 0000 0000 0000 0000   0x04   00000000	    // 6 bits na pos adedquada, *EQUIVALE A 0x04<<8*
 			  1111 0000 1001 1101 10000100 10xxxxxx     // 3o byte preenchido
 			 /**************************************** 3o byte ***********************************************/
+
+			/**************************************** 4o byte ***********************************************/  
+
+			num = 1 1101 0001 0001 1110
+				  1 1101 0001 00[01 1110] >> 0 (pula)     // (anterior - 6) pega 6 bits seguintes p/4o byte	
+				  1 1101 0001 0001 1110
+				 &0 0000 0000 0011 1111 (0x3F)			// limpa excesso
+				  0 0000 0000 0001 1110					// 6 bits a serem encaixados
+				  	   (NESSE CASO) 0x1E       		    // confere
+
+			  1111 0000 1001 1101 1000 0100 10xxxxxx     // 3o byte preenchido
+			| 0000 0000 0000 0000 0000 0000   0X1E	     // 6 bits na pos adedquada,EQUIVALE A 0x04<<0 (s shift)
+			  1111 0000 1001 1101 1000 0100 10xxxxxx     // 4o byte preenchido
+			 /**************************************** 4o byte ***********************************************/
 
 
             11110|(000) 10(0)11101 10000100 10011110 -> 

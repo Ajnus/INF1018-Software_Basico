@@ -264,6 +264,8 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 		    varUTF8  = 0xF0808080 & 0xF8DFFFFF;			// molde + 0's na frente 11110(000) 10(0)xxxxx 10xxxxxx 10xxxxxx
 		    varUTF8 = varUTF8 | (0x0001D11E>>12)<<16;    	// anterior mais 2o byte preenchido	 			 
 		    varUTF8 = varUTF8 | ((0x0001D11E>>6)&0x3F)<<8;      // anterior mais 3o byte preenchido
+		    varUTF8 = varUTF8 | (0x0001D11E&0x3F);      	// anterior mais 4o byte preenchido
+		    
 		    break;
 		    
 		    case 3 :
