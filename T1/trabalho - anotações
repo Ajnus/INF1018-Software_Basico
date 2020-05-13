@@ -99,6 +99,7 @@ int utf32_8(FILE *arq_entrada, FILE *arq_saida):
 
 					 qtdBitSig = 24-j (17) (varia de 17 a 21)
 
+				/**************************************** MOLDE + 0'S *****************************************/
 					 21 - qtdSig = 4 // n máximo de bits da seção da tabela(21) - número de bits significativos do número -> qtd de 0's
 
 					 if qtdZeros = 4
@@ -118,20 +119,36 @@ int utf32_8(FILE *arq_entrada, FILE *arq_saida):
 					 			 & FFFFFFF  (anterior + 0x40000) 					            | ops, nem faz nada
 
 					 	*não vale a pena loopar, fazer case/switch
-					 
+				/**************************************** MOLDE + 0'S *****************************************/
 
 
 
 			(21 - 17 = 4)
 
+			/**************************************** 2o byte ***********************************************/
 			num = 1 1101 0001 0001 1110 			
-			      1 1101 0000 0000 0000 >> 12 		// (qtdBitSig - qt quero)  pega 5 bits iniciais p/ 												 completar 2o byte no UTF-8
+			      1 1101 0001 0001 1110 >> 12 		// (qtdBitSig - qt quero)  pega 5 bits iniciais p/ 												 completar 2o byte no UTF-8
 			      0 0000 0000 0001 1101				// 5 bits a serem encaixados
 			      	  (NESSE CASO) 0x1D             // confere
 
 			  11110(000) 10(0)[xxxxx] 10xxxxxx 10xxxxxx // num com molde + 0's
-			| 0000 0000    000   1D	  00000000 00000000	// 5 bits na pos adedquada, *EQUIVALE A 0x1D<<16* 
+			| 0000 0000      0x1D     00000000 00000000	// 5 bits na pos adedquada, *EQUIVALE A 0x1D<<16* 
 			  11110(000) 10(0) 11101  10xxxxxx 10xxxxxx // 2o byte preenchido
+			/**************************************** 2o byte ***********************************************/
+			
+			/**************************************** 3o byte ***********************************************/  
+
+			num = 1 1101 0001 0001 1110
+				  1 1101 [0001 00]01 1110 >> 6  		// (anterior - 6)  pega 6 bits seguintes p/3o byte	
+				  0 0000 0111 0100 0100
+				 &0 0000 0000 0011 1111 (0x3F)			// limpa excesso
+				  0 0000 0000 0000 0100					// 6 bits a serem encaixados
+				  	   (NESSE CASO) 0x04       		    // confere
+
+			  1111 0000 1001 1101 10xxxxxx 10xxxxxx     // num com 2o byte preenchido
+			| 0000 0000 0000 0000   0x04   00000000	    // 6 bits na pos adedquada, *EQUIVALE A 0x04<<8*
+			  1111 0000 1001 1101 10000100 10xxxxxx     // 3o byte preenchido
+			 /**************************************** 3o byte ***********************************************/
 
 
             11110|(000) 10(0)11101 10000100 10011110 -> 
