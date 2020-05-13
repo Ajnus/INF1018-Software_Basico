@@ -1,6 +1,6 @@
 /* Júlio Necyk Cavalcanti Maia		1710430 3WB */
 /* Jam Ajna Soares			1013109 3WB */
-
+Relatóio do trabalho 1 INF1018 Software Básico.
 
 /* NOPE NOPE
 A primeira função ehLittleEndian verifica se o arquivo está em Big Endian, retornando 0, ou Little Endian, retornando 1, dessa forma checa-se o BOM, para UNICODE 32bits.
@@ -10,3 +10,15 @@ A suganda função trocaBigLit inverte os bytes de um número dois a dois, trans
 Já na terceira função contaBits, recebe um valor em utf8 e conta quantos 1's tem no char usado como parâmetro. Retorna 0 se for 0xxxxxxx, retorna 2 se for 110xxxxx 10xxxxxx, 3 se for 1110xxxx 10xxxxxx 10xxxxxx, e por fim, retorna 4 se for 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx.
 NOPE NOPE */
 
+A função utf8_32 recebe como parâmetro o arquivo de entrada e o arquivo de saída, depois confere se é Little Endian através da função isLittleEndian. 
+O arquivo de entrada não possui o BOM,logo é inserido no arquivo de saída. atraves do comando fread, lê-se o arquivo de entrada e começa o loop.
+Após operações bit a bit, os valores são passados a uma variável que posteriormente é escrita no arquivo de saída, com o comando fwrite.
+Caso de erro de leitura ou gravação do arquivo, emite erro (stderr) e retorna -1, caso de sucesso, retorna 0.
+
+Já a função utf32_8 também recebe os mesmos parâmetros da utf8_32, que são o arquivo de entrada e o arquivo de saída. Caso de erro de leitura no arquivo de 
+entrada ou no de saída emite o erro stderr e retorna -1. Depois, determina-se o tamanho do arquivo utilizando fseek e ftell, depois aloca na memória esse
+tamanho. Em seguida checa-se se é big ou little endian e depois checa o BOM. Caso o BOM esteja em outra ordem, o inverte, com a função inverte 32, e se for
+inválido gera erro stderr e retorna -1. Insere o BOM e o texto do arquivo no buffer. Em sequência, a variável j recebe o bit mais significativo, entre 1 a 8,
+onde 1 está na sétima posição, 2 na sexta assim por diante, até 8 que é o número 0x00. Posteriormente preenche os formatos do utf8 caso por caso, como 
+exemplo o formato 110xxxxx 10xxxxxx, e caso de erro dá erro stderr e retorna -1. Ao final usa a função free no bufferRead e no bufferWrite que foram usados
+para ler e escrever nos arquivos.
