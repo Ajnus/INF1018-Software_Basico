@@ -229,19 +229,19 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 	{
 		
 		//printf("*p eh: %02X\n", *p);
-		if ((0x08 & 0x10) == 0x10)
+		if ((0x10 & 0x10) == 0x10)
 		{
 			j=3;	// bit mais sig na 5a posicao
 		}
-		else if ((0x08 & 0x08) == 0x08)
+		else if ((0x10 & 0x08) == 0x08)
 		{
 			j=4;	// bit mais sig na 4a posicao
 		}
-		else if ((0x08 & 0x04) == 0x04)
+		else if ((0x10 & 0x04) == 0x04)
 		{
 			j=5;	// bit mais sig na 3a posicao
 		}
-		else if ((0x08 & 0x02) == 0x02)
+		else if ((0x10 & 0x02) == 0x02)
 		{
 			j=6;	// bit mais sig na 2a posicao
 		}
@@ -290,7 +290,15 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 		    break;
 		    
 		    case 0:
-		    varUTF8  = 0xF0808080 & 0xFFFFFFF;						// não faz nada
+		    varUTF8  = 0xF0808080;		//		Só molda sem inserir 0's 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+		    varUTF8 = varUTF8 | (0x0010D11E>>18)<<24;    	// anterior mais 1o byte preenchido	  
+		    varUTF8 = varUTF8 | ((0x0010D11E>>12)&0x3F)<<16;    // anterior mais 2o byte preenchido	  
+		    varUTF8 = varUTF8 | ((0x0010D11E>>6)&0x3F)<<8;      // anterior mais 3o byte preenchido
+		    varUTF8 = varUTF8 | (0x0010D11E&0x3F);      	// anterior mais 4o byte preenchido
+		    break;
+		    
+		    default:
+		    {fputs ("erro na leitura do valor UTF-32.", stderr); return -1;}
 		  }
 		
 			printf("Valor original convertido para UTF-8 e: %08X\n", varUTF8);
