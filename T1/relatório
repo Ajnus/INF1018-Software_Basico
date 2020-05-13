@@ -19,6 +19,6 @@ Já a função utf32_8 também recebe os mesmos parâmetros da utf8_32, que são
 entrada ou no de saída emite o erro stderr e retorna -1. Depois, determina-se o tamanho do arquivo utilizando fseek e ftell, depois aloca na memória esse
 tamanho. Em seguida checa-se se é big ou little endian e depois checa o BOM. Caso o BOM esteja em outra ordem, o inverte, com a função inverte 32, e se for
 inválido gera erro stderr e retorna -1. Insere o BOM e o texto do arquivo no buffer. Em sequência, a variável j recebe o bit mais significativo, entre 1 a 8,
-onde 1 está na sétima posição, 2 na sexta assim por diante, até 8 que é o número 0x00. Posteriormente preenche os formatos do utf8 caso por caso, como 
-exemplo o formato 110xxxxx 10xxxxxx, e caso de erro dá erro stderr e retorna -1. Ao final usa a função free no bufferRead e no bufferWrite que foram usados
-para ler e escrever nos arquivos.
+onde 1 está na sétima posição, 2 na sexta assim por diante, até 8 que é o número 0x00. Posteriormente preenche os formatos do utf8 caso por caso, usando 
+operações bit a bit como exemplo o formato 110xxxxx 10xxxxxx, e caso de erro dá erro stderr e retorna -1. Ao final usa a função free no bufferRead e no
+bufferWrite que foram usados para ler e escrever nos arquivos.
