@@ -76,7 +76,7 @@ int utf32_8(FILE *arq_entrada, FILE *arq_saida):
 
 
           0x0001D11E    ->      0xF09D849E ("a ordem de armazenamento não faz sentido 					                   para arquivos UTF-8")
- 0    0   |   1    0   D   1    1   E
+ 0    0   |   0    1   D   1    1   E
 0000 0000 | 0001 0000 1101 0001 0001 1110 
 0001D11E-> tabela -> U+10000 a U+10FFFF | (2^16 a 2^21-1)| 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx (usa 4 bytes)
 0001D11E -> 11110|3BITS 10|6BITS 10|6BITS 10|6BITS -> 
