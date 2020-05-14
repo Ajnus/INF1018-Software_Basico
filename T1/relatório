@@ -2,14 +2,11 @@
 /* Jam Ajna Soares			1013109 3WB */
 Relatóio do trabalho 1 INF1018 Software Básico.
 
-/* NOPE NOPE
-A primeira função ehLittleEndian verifica se o arquivo está em Big Endian, retornando 0, ou Little Endian, retornando 1, dessa forma checa-se o BOM, para UNICODE 32bits.
+A função utf8_32 está funcionando parcialmente, pois não está mostrando exatamente o valor do caractere, mas está alocando o tamanho
+correto de bits e está fazendo parcialmente a conversão.
 
-A suganda função trocaBigLit inverte os bytes de um número dois a dois, transformando, dessa forma, de big endian para little endian.
 
-Já na terceira função contaBits, recebe um valor em utf8 e conta quantos 1's tem no char usado como parâmetro. Retorna 0 se for 0xxxxxxx, retorna 2 se for 110xxxxx 10xxxxxx, 3 se for 1110xxxx 10xxxxxx 10xxxxxx, e por fim, retorna 4 se for 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx.
-NOPE NOPE */
-
+/* documentação
 A função utf8_32 recebe como parâmetro o arquivo de entrada e o arquivo de saída, depois confere se é Little Endian através da função isLittleEndian. 
 O arquivo de entrada não possui o BOM,logo é inserido no arquivo de saída. atraves do comando fread, lê-se o arquivo de entrada e começa o loop.
 Após operações bit a bit, os valores são passados a uma variável que posteriormente é escrita no arquivo de saída, com o comando fwrite.
@@ -22,3 +19,4 @@ inválido gera erro stderr e retorna -1. Insere o BOM e o texto do arquivo no bu
 onde 1 está na sétima posição, 2 na sexta assim por diante, até 8 que é o número 0x00. Posteriormente preenche os formatos do utf8 caso por caso, usando 
 operações bit a bit como exemplo o formato 110xxxxx 10xxxxxx, e caso de erro dá erro stderr e retorna -1. Ao final usa a função free no bufferRead e no
 bufferWrite que foram usados para ler e escrever nos arquivos.
+*/
