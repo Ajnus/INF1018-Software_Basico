@@ -1,5 +1,5 @@
 /* Júlio Necyk Cavalcanti Maia		1710430 3WB */
-/* Jam Ajna Soares					1013109 3WB */
+/* Jam Ajna Soares			1013109 3WB */
 Relatório T1 - INF 1018: Software Básico
 2020-1 
 

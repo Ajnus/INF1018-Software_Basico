@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "conv_utf.h"
 
 void dump (void *p, int n)
@@ -26,6 +25,7 @@ int isLittleEndian()
 
 unsigned int inverte32 (unsigned int x)
 {
+		//printf("x = 0x%08X\n", x);
 		//printf("01-D:\n");
 	unsigned char d = x>>24;
 		//dump (&d, sizeof(d));
@@ -45,8 +45,8 @@ unsigned int inverte32 (unsigned int x)
 		unsigned int y = (a<<24) + (b<<16) + (c<<8) + d;
 		printf("\nY:\n");
 		dump (&y, sizeof(y));*/
-	
-	return (a<<24) + (b<<16) + (c<<8) + d;
+
+		return (a<<24) + (b<<16) + (c<<8) + d;
 }
 
 int contaBits(char s){
@@ -147,10 +147,15 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 {
 	long rSize;
 	long wSize;
+	int i, j;
 	unsigned int* bufferRead;
 	unsigned int* bufferWrite;
+	unsigned char* p;
 	char ordenacao;
-	unsigned int BOM = 0;
+	char qtdBitSig;
+	char qtdZeros;
+	unsigned int BOM;
+	unsigned int varUTF8;
 	
 	if (arq_entrada==NULL || arq_saida==NULL)
 		{fputs ("erro de leitura de arquivo.", stderr); return -1;}
@@ -192,50 +197,51 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 	fread(bufferRead, 4, rSize/4, arq_entrada);
 		printf("O tamanho de buffer eh: %ld bytes\n", rSize);
 	
-	//print e comparação com dump
-	int i;
-	for (i = 0; i < rSize/4; i++)
-		printf("%c", bufferRead[i]);
-		printf("\n\n");
+		//print e comparação com dump
+		for (i = 0; i < rSize/4; i++)
+			printf("%c", bufferRead[i]);
+			printf("\n\n");
 		
-		printf("int* buffer:\n");		
-	for (i = 0; i < rSize/4; i++)
-		printf("%08X|", bufferRead[i]);
+			printf("int* buffer:\n");		
+		for (i = 0; i < rSize/4; i++)
+			printf("%08X|", bufferRead[i]);
 		
-		//dump (&buffer[0], lSize);
-		printf("\n\n");
+			//dump (&buffer[0], lSize);
+			printf("\n\n");
 	
 	
-	for (i = 1; i < rSize/4; i++)
-		if (ordenacao) // se Little Endian
-			bufferWrite[i-1] = inverte32(bufferRead[i]); // tranfere texto sem BOM
+		for (i = 1; i < rSize/4; i++)
+			if (ordenacao) // se Little Endian
+				bufferWrite[i-1] = inverte32(bufferRead[i]); // transfere texto invertido sem BOM, melhor para apontar bytes
 
 			
-		printf("inverso int* buffer (sem BOM):\n");
-	for (i = 0; i < wSize/4; i++)
-		printf("%02X|", bufferWrite[i]);
-		printf("\n\n");
+			printf("inverso int* buffer (sem BOM):\n");
+		for (i = 0; i < wSize/4; i++)
+			printf("%02X|", bufferWrite[i]);
+			printf("\n\n");
 		
-		/*printf("dump - tamanho do buffer: %ld\n", wSize);
-		dump (&bufferWrite[0], wSize);*/
+			/*printf("dump - tamanho do buffer: %ld\n", wSize);
+			dump (&bufferWrite[0], wSize);*/
 	
-	int j = 0;
-	int qtdBitSig;
-	int qtdZeros;
-	unsigned int varUTF8;
-	unsigned char *p = &bufferWrite;
+	
+
+	p = &bufferWrite;	// ponteiro para percorrer invertido
 		//printf("\n%p - %02X\n", p+3, *p+3);
 	wSize/=4;
-	i = 0;
-	while (wSize--)
+	wSize++;
+	i = 0; j = 0;
+	while (wSize--)		
 	{	
 		p = &bufferWrite[i-1];		//evita BOM
 		
+		// determina a qual seção UTF-8 o número pertence
 		if (bufferRead[i] <= 0x007F) 
 		{
 			
 				//printf("bufferRead[%d] eh: %02X\n", i, bufferRead[i]);
 				//printf("*p eh: %02X\n", *(p+3));
+				
+			// determina 0s a esquerda/posição do bit mais significativo	
 			if ((*(p+3) & 0x40) == 0x40)
 			{
 				j=1;	// bit mais sig na 7a posicao
@@ -318,9 +324,10 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 			    default:
 			    	{fputs ("erro na leitura do valor UTF-32 na seção 1.\n", stderr); return -1;}
 			  }
-		
+				 
 			printf("O Valor UTF-32 0x%02X convertido para UTF-8 e: 0x%02X\n", bufferRead[i], varUTF8);
-			if (fwrite (&varUTF8,rSize-4,1,arq_saida))
+			//varutf8"U+"+varUTF8;
+			if (fwrite (&varUTF8, 1, 1, arq_saida))
 				printf("Caractere impresso no arquivo com sucesso!\n");
 			else
 				fputs ("erro de gravação do arquivo.", stderr);
@@ -386,9 +393,11 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 			    default:
 			    {fputs ("erro na leitura do valor UTF-32 na seção 2.\n", stderr); return -1;}
 			  }
-		
+				//varUTF8 = "U+"+varUTF8;
 			printf("O Valor UTF-32 0x%04X convertido para UTF-8 e: 0x%04X\n", bufferRead[i], varUTF8);
-			if (fwrite (&varUTF8,rSize-4,1,arq_saida))
+			varUTF8 = inverte32(varUTF8);
+			varUTF8 = varUTF8>>16;
+			if (fwrite (&varUTF8, 2, 1, arq_saida))
 				printf("Caractere impresso no arquivo com sucesso!\n");
 			else
 				fputs("erro de gravação do arquivo.", stderr);
@@ -432,35 +441,35 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 			switch (qtdZeros)
 			{
 			    case 4:
-			    varUTF8 = 0xF08080;
+			    varUTF8 = 0xE08080;
 			    varUTF8 = varUTF8 | (bufferRead[i]>>6)<<8;    	// anterior mais 3o byte preenchido
 			    varUTF8 = varUTF8 | (bufferRead[i]&0x3F);      	// anterior mais 4o byte preenchido
 			    
 			    break;
 			    
 			    case 3:
-			    varUTF8 = 0xF08080;
+			    varUTF8 = 0xE08080;
 			    varUTF8 = varUTF8 | (bufferRead[i]>>12)<<16;    	// anterior mais 2o byte preenchido
 			    varUTF8 = varUTF8 | ((bufferRead[i]>>6)&0x3F)<<8;   // anterior mais 3o byte preenchido
 			    varUTF8 = varUTF8 | (bufferRead[i]&0x3F);      	// anterior mais 4o byte preenchido
 			    break;
 			    
 			    case 2:
-		            varUTF8 = 0x00F08080;
+		            varUTF8 = 0xE08080;
 	   		    varUTF8 = varUTF8 | (bufferRead[i]>>12)<<16;    	// anterior mais 2o byte preenchido	  
 			    varUTF8 = varUTF8 | ((bufferRead[i]>>6)&0x3F)<<8;    // anterior mais 3o byte preenchido	  
 			    varUTF8 = varUTF8 | (bufferRead[i]&0x3F);      	// anterior mais 4o byte preenchido
 			    break;
 			    
 			    case 1:
-			    varUTF8 = 0xF08080; //& 0xF0FFFF			
+			    varUTF8 = 0xE08080; //& 0xF0FFFF			
 			    varUTF8 = varUTF8 | ((bufferRead[i]>>12)&0x07)<<16;    	// anterior mais 2o byte preenchido	  
 			    varUTF8 = varUTF8 | ((bufferRead[i]>>6)&0x3F)<<8;    // anterior mais 3o byte preenchido	  
 			    varUTF8 = varUTF8 | (bufferRead[i]&0x3F);      	// anterior mais 4o byte preenchido
 			    break;
 			    
 			    case 0:
-                            varUTF8 = 0x00F08080;
+                            varUTF8 = 0xE08080;
 			    varUTF8 = varUTF8 | (bufferRead[i]>>12)<<16;    	// anterior mais 2o byte preenchido	  
 			    varUTF8 = varUTF8 | ((bufferRead[i]>>6)&0x3F)<<8;    // anterior mais 3o byte preenchido	  
 
@@ -470,9 +479,12 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 			    default:
 			    {fputs ("erro na leitura do valor UTF-32 na seção 3.\n", stderr); return -1;}
 			  }
-		
+			  
 			printf("O Valor UTF-32 0x%06X convertido para UTF-8 e: 0x%06X\n", bufferRead[i], varUTF8);
-			if (fwrite (&varUTF8,rSize-4,1,arq_saida))
+			varUTF8 = inverte32(varUTF8);
+			varUTF8 = varUTF8>>8;
+
+			if (fwrite (&varUTF8, 3, 1, arq_saida))
 				printf("Caractere impresso no arquivo com sucesso!\n");
 			else
 				fputs("erro de gravação do arquivo.", stderr);
@@ -554,19 +566,16 @@ int utf32_8(FILE* arq_entrada, FILE* arq_saida)
 			    default:
 			    {fputs ("erro na leitura do valor UTF-32 na seção 4.\n", stderr); return -1;}
 			  }
-		
+			  
 			printf("O Valor UTF-32 0x%06X convertido para UTF-8 e: 0x%06X\n", bufferRead[i], varUTF8);
-			if (fwrite (&varUTF8,rSize-4,1,arq_saida))
+			varUTF8 = inverte32(varUTF8);
+			if (fwrite (&varUTF8, 4, 1, arq_saida))
 				printf("Caractere impresso no arquivo com sucesso!\n");
 			else
 				fputs("erro de gravação do arquivo.", stderr);
 				
 		}		
-		
-	
-			//printf("conteudo de bufferWrite como char: %02X\n", *p);
 		i++;
-		//p+=4;	// end while
 	}
 	printf("\nrepetições: %d\n", i);		
 	free(bufferRead);
