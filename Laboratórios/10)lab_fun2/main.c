@@ -7,7 +7,7 @@ struct X
 	struct X* next;
 };
 
-int add (struct X* x);
+int add2 (struct X* x);
 
 int main (void)
 {
@@ -23,7 +23,7 @@ int main (void)
 	x[0].next = &(x[MAX-1]);
 	x[1].next = NULL;
 
-	printf ("resultado de add: %d\n", add(x));
+	printf ("resultado de add2: %d\n", add2(x));
 	
 	return 0;
 }
