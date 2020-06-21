@@ -29,7 +29,7 @@ FOR:
 	movl	%ebx, %r12d		/* %r12d = i			*/
 	imull	$4, %r12d		/* %r12d = i*4 bytes		*/
 	
-	addq	-8(%rbp), %r12 		/* %r12d = %r12d(i) + um	*/
+	addq	-8(%rbp), %r12 		/* %r12 = %r12(i) + um	*/
 	movq	(%r12), %rdi		/* *(um+1) 1o param		*/
 	call	f
 	
