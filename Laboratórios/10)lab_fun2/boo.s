@@ -44,6 +44,9 @@ WHILE:
 	jmp	WHILE
 	
 FORA_WHILE:
+	movq	-12(%rbp), %r12		/* int n			*/
+	movq	-16(%rbp), %r13		/* int val			*/
+	movq	-8(%rbp), %rbx		/* struct X* px 		*/
 	addq	$16, %rsp
 	leave
 	ret	
