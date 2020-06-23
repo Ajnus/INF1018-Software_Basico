@@ -44,7 +44,7 @@ FOR:
 	cmpl	%r15d, %ebx		/* if (i				*/
 	je	FORA_FOR		/*	 < tam)				*/
 	
-	movl	%r15d, %edx		/* restaura no loop %edx = tam			*/
+	movl	%r15d, %edx		/* restaura no loop %edx = tam		*/
 	subl	%ebx, %edx		/* %edx(tam) -= i			*/
 	movq	%rdx, %rsi		/* (tam-i) <2o param>			*/
 	
