@@ -24,7 +24,7 @@ foo:
 	movl	%esi, %edx		/* %edx = tam												*/
 	imul	$4, %edx		/* %edx(tam) *= 4, teremos um vetor de ints								*/
 	movl	%edx, %eax			/* %eax = tamanho do vetor, usado mais tarde para determinar &b	*/
-	leaq	0(%rbp), %rcx			/*                           usado mais tarde para determinar &b*/	
+	movq	%rbp, %rcx			/*                           usado mais tarde para determinar &b*/	
 	shr	$4, %edx		/* %edx(tam) /= 16, determina fator do múltiplo de 16 imediatamente inferior ao tamanho do vetor	*/
 	incl	%edx			/* %edx(tam)++												*/
 	imul	$16, %edx		/* determina múltiplo de 16 imediatamente superior							*/
