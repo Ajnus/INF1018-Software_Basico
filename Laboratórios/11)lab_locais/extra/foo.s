@@ -39,7 +39,6 @@ foo:
 	
 	movl	$0, %ebx		/* %ebx(i) = 0				*/
 
-
 FOR:
 	cmpl	%r15d, %ebx		/* if (i				*/
 	je	FORA_FOR		/*	 < tam)				*/
